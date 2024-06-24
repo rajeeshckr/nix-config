@@ -49,15 +49,25 @@
     homeDirectory = "/home/sam";
   };
 
+  programs.zsh = {
+    enable = true;
+    shellAliases = {
+      gst = "git status";
+      k = "kubectl";
+      glog = "git log -S";
+    };
+  };
+
   # Add stuff for your user as you see fit:
   programs.neovim.enable = true;
   home.packages = with pkgs; [
     jq
     git
+    gh
     yq
     kubectl
     ripgrep
-    zsh
+    keepassxc
   ];
 
   # Enable home-manager and git
