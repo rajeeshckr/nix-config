@@ -44,13 +44,17 @@
   };
 
   home = {
-    username = "sam.lockart";
-    homeDirectory = "/Users/sam.lockart";
+    username = lib.mkForce "sam.lockart";
+    homeDirectory = lib.mkForce "/Users/sam.lockart";
   };
 
   # Add stuff for your user as you see fit:
   programs.neovim.enable = true;
-  home.packages = with pkgs; [ iterm2 ];
+  home.packages = with pkgs; [
+    iterm2
+    jetbrains.goland
+    jetbrains.ruby-mine
+  ];
 
   # Enable home-manager and git
   programs.home-manager.enable = true;

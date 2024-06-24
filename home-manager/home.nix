@@ -52,7 +52,14 @@
 
   # Add stuff for your user as you see fit:
   programs.neovim.enable = true;
-  home.packages = with pkgs; [ jq git yq kubectl ];
+  home.packages = with pkgs; [
+    jq
+    git
+    yq
+    kubectl
+    ripgrep
+    zsh
+  ];
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
