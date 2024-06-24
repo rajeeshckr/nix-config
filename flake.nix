@@ -21,10 +21,8 @@
 
   outputs = {
     self,
-    nix-darwin,
     nixpkgs,
     home-manager,
-    nixpkgs-firefox-darwin,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -36,12 +34,6 @@
       "aarch64-darwin"
       "x86_64-darwin"
     ];
-    username = "sam";
-    specialArgs =
-      inputs
-      // {
-        inherit username;
-      };
     # This is a function that generates an attribute by calling a function you
     # pass to it, with each system as an argument
     forAllSystems = nixpkgs.lib.genAttrs systems;
@@ -61,20 +53,6 @@
     # Reusable home-manager modules you might want to export
     # These are usually stuff you would upstream into home-manager
     homeManagerModules = import ./modules/home-manager;
-
-    # darwin
-    darwinConfigurations."${username}" = nix-darwin.lib.darwinSystem {
-      modules = [
-        home-manager.darwinModules.home-manager
-        {
-          nixpkgs.overlays = [ inputs.nixpkgs-firefox-darwin.overlay ]; 
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-#          home-manager.extraSpecialArgs = specialArgs;
-          home-manager.users.${username} = import ./home;
-        }
-      ];
-    };
 
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
