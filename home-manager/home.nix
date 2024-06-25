@@ -54,20 +54,26 @@
     shellAliases = {
       gst = "git status";
       k = "kubectl";
+      kgp = "kubectl get pods";
       glog = "git log -S";
+      docker = "podman";
     };
   };
 
-  # Add stuff for your user as you see fit:
-  programs.neovim.enable = true;
   home.packages = with pkgs; [
     jq
     git
     gh
     yq
     kubectl
+    kubectx
     ripgrep
     keepassxc
+    podman
+    qemu
+    jsonnet
+    stern
+    fzf
   ];
 
   # Enable home-manager and git

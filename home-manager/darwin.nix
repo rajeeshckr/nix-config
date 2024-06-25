@@ -48,12 +48,12 @@
     homeDirectory = lib.mkForce "/Users/sam.lockart";
   };
 
-  # Add stuff for your user as you see fit:
-  programs.neovim.enable = true;
   home.packages = with pkgs; [
     iterm2
     jetbrains.goland
     jetbrains.ruby-mine
+    saml2aws
+    awscli2
   ];
 
   # Enable home-manager and git
