@@ -44,6 +44,21 @@
     };
   };
 
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    extraConfig = ''
+      set number
+
+      set tabstop     =4
+      set softtabstop =4
+      set shiftwidth  =4
+      set expandtab
+
+    '';
+  };
+
   home = {
     username = "sam";
     homeDirectory = "/home/sam";
@@ -51,6 +66,11 @@
 
   programs.zsh = {
     enable = true;
+    initExtra = ''
+      autoload -z edit-command-line
+      zle -N edit-command-line
+      bindkey "^X^E" edit-command-line
+    '';
     shellAliases = {
       gst = "git status";
       k = "kubectl";
