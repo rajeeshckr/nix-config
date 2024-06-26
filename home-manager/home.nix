@@ -76,8 +76,12 @@
       k = "kubectl";
       kgp = "kubectl get pods";
       glog = "git log -S";
-      docker = "podman";
     };
+  };
+
+  home.file = {
+    Docker.source = config.lib.file.mkOutOfStoreSymlink "${pkgs.podman}/bin/podman";
+    Docker.target = "${config.home.homeDirectory}/.local/bin/docker";
   };
 
   home.packages = with pkgs; [

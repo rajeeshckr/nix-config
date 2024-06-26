@@ -46,6 +46,9 @@
   home = {
     username = lib.mkForce "sam.lockart";
     homeDirectory = lib.mkForce "/Users/sam.lockart";
+    sessionPath = [
+        "$HOME/.local/bin"
+    ];
   };
 
   home.packages = with pkgs; [
