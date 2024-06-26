@@ -98,6 +98,8 @@
     jsonnet
     stern
     fzf
+    go
+    kustomize
   ];
 
   # Enable home-manager and git

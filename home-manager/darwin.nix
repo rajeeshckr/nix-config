@@ -53,8 +53,8 @@
 
   home.packages = with pkgs; [
     iterm2
-    jetbrains.goland
-    jetbrains.ruby-mine
+    unstable.jetbrains.goland
+    unstable.jetbrains.ruby-mine
     saml2aws
     awscli2
   ];
