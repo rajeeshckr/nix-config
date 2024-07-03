@@ -73,10 +73,16 @@
     '';
     shellAliases = {
       gst = "git status";
+      gco = "git checkout";
       k = "kubectl";
       kgp = "kubectl get pods";
       glog = "git log -S";
     };
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   home.file = {
@@ -98,7 +104,7 @@
     jsonnet
     stern
     fzf
-    go
+    unstable.go
     kustomize
   ];
 

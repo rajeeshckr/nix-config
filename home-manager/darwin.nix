@@ -57,6 +57,8 @@
     unstable.jetbrains.ruby-mine
     saml2aws
     awscli2
+    vendir
+    ssm-session-manager-plugin
   ];
 
   # Enable home-manager and git
