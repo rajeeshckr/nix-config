@@ -112,6 +112,7 @@
     fzf
     unstable.go
     kustomize
+    direnv
   ];
 
   # Enable home-manager and git
