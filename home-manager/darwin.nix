@@ -53,6 +53,7 @@
 
   home.packages = with pkgs; [
     iterm2
+    obsidian
     unstable.jetbrains.goland
     unstable.jetbrains.ruby-mine
     saml2aws
