@@ -44,6 +44,13 @@
     };
   };
 
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
+    };
+
   programs.neovim = {
     enable = true;
     viAlias = true;
