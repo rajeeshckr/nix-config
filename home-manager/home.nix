@@ -57,6 +57,12 @@
       set expandtab
 
     '';
+    plugins = [
+        {
+            plugin = pkgs.vimPlugins.vim-sneak;
+            config = "let g:sneak#label = 1";
+        }
+    ];
   };
 
   home = {
