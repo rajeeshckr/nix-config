@@ -124,7 +124,23 @@
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
-  programs.git.enable = true;
+  programs.git = {
+    enable = true;
+    userName = "alam0rt";
+    aliases = {
+      "new" = "!git checkout -b sam.lockart/$1 && :";
+    };
+    ignores = [
+      ".idea/"
+      "shell.nix"
+      ".envrc"
+      ".direnv/"
+    ];
+    extraConfig = {
+      url."ssh://git@github.com/".insteadOf = "https://github.com/";
+      push.autoSetupRemote = true;
+    };
+  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
