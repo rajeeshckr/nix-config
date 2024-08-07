@@ -129,6 +129,8 @@
     userName = "alam0rt";
     aliases = {
       "new" = "!git checkout -b sam.lockart/$1 && :";
+      "pl" = "!git fetch; git pull -r";
+      "p" = "push";
     };
     ignores = [
       ".idea/"
