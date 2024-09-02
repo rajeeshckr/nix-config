@@ -131,6 +131,7 @@
       "new" = "!git checkout -b sam.lockart/$1 && :";
       "pl" = "!git fetch; git pull -r";
       "p" = "push";
+      "untracked" = "ls-files --others --exclude-standard";
     };
     ignores = [
       ".idea/"
@@ -141,6 +142,7 @@
     extraConfig = {
       url."ssh://git@github.com/".insteadOf = "https://github.com/";
       push.autoSetupRemote = true;
+      core.excludesfile = "${config.home.homeDirectory}/.gitignore";
     };
   };
 
