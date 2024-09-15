@@ -96,7 +96,7 @@
       }
     '';
     shellAliases = {
-      gst = "git status";
+      gst = "git status -s -b";
       gco = "git checkout";
       kubectl = "kubecolor";
       k = "kubectl";
@@ -163,6 +163,8 @@
       "pl" = "!git fetch; git pull -r";
       "p" = "push";
       "untracked" = "ls-files --others --exclude-standard";
+      "amend" = "commit -a --amend --no-edit";
+      "rbm" = "!br=$((test -e .git/refs/remotes/origin/main && echo main) || echo master) && git fetch origin && git rebase origin/$br";
     };
     ignores = [
       ".idea/"
