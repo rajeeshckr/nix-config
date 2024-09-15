@@ -83,14 +83,35 @@
       autoload -z edit-command-line
       zle -N edit-command-line
       bindkey "^X^E" edit-command-line
+
+      # https://unix.stackexchange.com/questions/284105/zsh-hash-directory-completion
+      setopt autocd cdable_vars
+
+      # Make "kubecolor" borrow the same completion logic as "kubectl"
+      compdef kubecolor=kubectl
+      compdef ka=kubectl
+
+      function ka() { 
+          kubectl "$1" --as admin --as-group system:masters "''${@:2}";
+      }
     '';
     shellAliases = {
       gst = "git status";
       gco = "git checkout";
+      kubectl = "kubecolor";
       k = "kubectl";
       kgp = "kubectl get pods";
       glog = "git log -S";
     };
+    dirHashes = {
+      projects = "$HOME/projects";
+    };
+    history = {
+      ignorePatterns = [
+        "GITHUB_TOKEN"
+      ];
+    };
+    enableAutosuggestions = true;
   };
 
   programs.fzf = {
@@ -119,6 +140,7 @@
     fzf
     unstable.go
     kustomize
+    kubecolor
     direnv
   ];
 
