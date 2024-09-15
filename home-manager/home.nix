@@ -122,6 +122,15 @@
     direnv
   ];
 
+  programs.vscode = {
+    enable = true;
+      extensions = with pkgs.vscode-extensions; [
+        dracula-theme.theme-dracula
+        vscodevim.vim
+        golang.go
+    ];
+  };
+
   # Enable home-manager and git
   programs.home-manager.enable = true;
   programs.git = {
