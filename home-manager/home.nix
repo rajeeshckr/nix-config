@@ -128,31 +128,68 @@
   };
 
   home.packages = with pkgs; [
+    # k8s
+    kubectl
+    kubectx
+    kustomize
+    kubecolor
+    stern
+
+    # core
     jq
     git
     gh
     yq
-    kubectl
-    kubectx
     ripgrep
-    keepassxc
+    direnv
+
+    # encryption
+    gnupg
+    sops
+
+    # dev
+    unstable.go
     podman
     qemu
+    shellcheck
     jsonnet
-    stern
-    fzf
-    unstable.go
-    kustomize
-    kubecolor
-    direnv
+
+    # graphical
+    keepassxc
   ];
 
   programs.vscode = {
     enable = true;
       extensions = with pkgs.vscode-extensions; [
+        # core
         dracula-theme.theme-dracula
         vscodevim.vim
+
+        # golang
         golang.go
+
+        # rust
+        rust-lang.rust-analyzer
+
+        # ruby
+        shopify.ruby-lsp
+
+        # nix
+        jnoortheen.nix-ide
+
+        # terraform
+        hashicorp.hcl
+
+        # linux
+        timonwong.shellcheck
+        coolbear.systemd-unit-file
+
+        # extras
+        signageos.signageos-vscode-sops
+        ms-vscode-remote.remote-ssh
+        github.copilot
+        github.copilot-chat
+        ms-vscode.makefile-tools
     ];
   };
 
