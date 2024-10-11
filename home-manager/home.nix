@@ -17,6 +17,7 @@
     # inputs.nix-colors.homeManagerModules.default
 
     ./config/firefox.nix
+    ./config/vscode.nix
   ];
 
   nixpkgs = {
@@ -160,46 +161,12 @@
     keepassxc
   ];
 
-  programs.vscode = {
-    enable = true;
-      extensions = with pkgs.vscode-extensions; [
-        # core
-        dracula-theme.theme-dracula
-        vscodevim.vim
-
-        # golang
-        golang.go
-
-        # rust
-        rust-lang.rust-analyzer
-
-        # ruby
-        shopify.ruby-lsp
-
-        # nix
-        jnoortheen.nix-ide
-
-        # terraform
-        hashicorp.hcl
-
-        # linux
-        timonwong.shellcheck
-        coolbear.systemd-unit-file
-
-        # extras
-        signageos.signageos-vscode-sops
-        ms-vscode-remote.remote-ssh
-        github.copilot
-        github.copilot-chat
-        ms-vscode.makefile-tools
-    ];
-  };
-
   # Enable home-manager and git
   programs.home-manager.enable = true;
   programs.git = {
     enable = true;
     userName = "alam0rt";
+    userEmail = "sam@samlockart.com";
     aliases = {
       "new" = "!git checkout -b sam.lockart/$1 && :";
       "pl" = "!git fetch; git pull -r";
