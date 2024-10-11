@@ -16,7 +16,7 @@
     # Or modules exported from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModules.default
 
-    # ./firefox.nix # get working on darwin
+    ./config/firefox.nix
   ];
 
   nixpkgs = {
@@ -114,7 +114,9 @@
         "GITHUB_TOKEN"
       ];
     };
-    enableAutosuggestions = true;
+    autosuggestion = {
+      enable = true;
+    };
   };
 
   programs.fzf = {
