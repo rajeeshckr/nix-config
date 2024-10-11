@@ -17,6 +17,7 @@
     # inputs.nix-colors.homeManagerModules.default
 
     ./config/firefox.nix
+    ./config/emacs.nix
     ./config/vscode.nix
     ./config/vim.nix
   ];
@@ -78,6 +79,9 @@
       if [[ -f "/home/sam/vault/kube" ]]; then
         export KUBECONFIG="/home/sam/vault/kube"
       fi
+
+     # Load session vars
+     . ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh
     '';
     shellAliases = {
       gst = "git status -s -b";
@@ -136,6 +140,7 @@
     qemu
     shellcheck
     jsonnet
+    rust-analyzer
 
     # graphical
     keepassxc
