@@ -22,6 +22,14 @@
     enable = true;
     trustedInterfaces = [ "tailscale0" ];
     checkReversePath = "loose";
+    allowedTCPPorts = [
+      8384 22000 # syncthing
+      22 # ssh via tailscale
+      6112 # wc3
+    ];
+    allowedUDPPorts = [
+      6112
+    ];
   };
 
   # Syncthing
@@ -40,10 +48,22 @@
     };
   };
 
+  # networking
   services.tailscale = {
     enable = true;
     openFirewall = true;
     extraUpFlags = ["--login-server=https://hs.samlockart.com"];
+  };
+
+  programs.wireshark = {
+    enable = true;
+  };
+
+  services.avahi = {
+    enable = true;
+    reflector = true;
+    allowInterfaces = ["tailscale0" "enp4s0" ];
+    allowPointToPoint = true;
   };
 
 
@@ -95,19 +115,30 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    # core
     vim
     firefox
+    
+    # social
+    mumble
+    element
     gnupg
+
+    # dev
+    ghidra
+    wireshark
+    wineWowPackages.stable
+
+    # fun
+    unstable.lutris
   ];
 
-  # enable docker support
-  virtualisation.docker = {
-    enable = true;
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
-  };
+
+
+  # bluetooth
+  services.blueman.enable = true;
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
   # steam
   programs.steam = {
