@@ -20,6 +20,10 @@
 
     # s3cr3ts
     agenix.url = "github:ryantm/agenix";
+
+    # pvpgn
+    pvpgnix.url = "github:alam0rt/pvpgnix";
+    pvpgnix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
@@ -27,6 +31,7 @@
     nixpkgs,
     home-manager,
     agenix,
+    pvpgnix,
     ...
   } @ inputs: let
     inherit (self) outputs;

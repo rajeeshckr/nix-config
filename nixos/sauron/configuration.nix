@@ -458,6 +458,10 @@
     };
   };
 
+  services.pvpgn = {
+    enable = true;
+  };
+
   # NFS
   services.nfs.server = {
     enable = true;

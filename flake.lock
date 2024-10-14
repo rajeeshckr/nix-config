@@ -188,6 +188,27 @@
         "type": "github"
       }
     },
+    "pvpgnix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": "utils"
+      },
+      "locked": {
+        "lastModified": 1728874354,
+        "narHash": "sha256-0Rfjho04AaCg9kKfUoEj2z0+OGss96j/DDeUEykc4fM=",
+        "owner": "alam0rt",
+        "repo": "pvpgnix",
+        "rev": "412caebc1b40cc09a6fe6b4cda9b578a813d2391",
+        "type": "github"
+      },
+      "original": {
+        "owner": "alam0rt",
+        "repo": "pvpgnix",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -195,7 +216,8 @@
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-firefox-darwin": "nixpkgs-firefox-darwin",
-        "nixpkgs-unstable": "nixpkgs-unstable"
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "pvpgnix": "pvpgnix"
       }
     },
     "systems": {
@@ -210,6 +232,21 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "utils": {
+      "locked": {
+        "lastModified": 1648297722,
+        "narHash": "sha256-W+qlPsiZd8F3XkzXOzAoR+mpFqzm3ekQkJNa+PIh1BQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "0f8662f1319ad6abf89b3380dd2722369fc51ade",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
         "type": "github"
       }
     }
