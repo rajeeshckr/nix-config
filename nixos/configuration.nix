@@ -17,7 +17,7 @@
     # You can also split up your configuration and import pieces of it here:
     ./config/users.nix
     inputs.agenix.nixosModules.default
-    inputs.pvpgnix.nixosModules.x86_64-linux
+    inputs.pvpgnix.nixosModules.x86_64-linux.default
   ];
 
 
@@ -83,7 +83,7 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   # allow interacting with secret store
-  environment.systemPackages = [ inputs.agenix.packages.x86_64-linux.default inputs.pvpgnix.packages.x86_64-linux.default ];
+  environment.systemPackages = [ inputs.agenix.packages.x86_64-linux.default ];
 
   # This setups a SSH server. Very important if you're setting up a headless system.
   # Feel free to remove if you don't need it.

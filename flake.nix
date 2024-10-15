@@ -23,6 +23,7 @@
 
     # pvpgn
     pvpgnix.url = "github:alam0rt/pvpgnix";
+#    pvpgnix.url = "path:/home/sam/pvpgnix";
     pvpgnix.inputs.nixpkgs.follows = "nixpkgs";
   };
 

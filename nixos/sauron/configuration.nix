@@ -256,6 +256,16 @@
     jellyfin-ffmpeg
   ];
 
+  services.pvpgn = {
+    enable = true;
+    bnetd.logFile = "/var/log/bnetd.log";
+    localStateDir = "/srv/data/pvpgn";
+    openFirewall = true;
+    news = ''
+      Welcome to the jungle.
+    '';
+  };
+
   # enable docker support
   virtualisation.docker = {
     enable = true;
@@ -456,10 +466,6 @@
           serve_from_sub_path = true;
         };
     };
-  };
-
-  services.pvpgn = {
-    enable = true;
   };
 
   # NFS
