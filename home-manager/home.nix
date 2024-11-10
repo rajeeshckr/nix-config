@@ -119,8 +119,10 @@
     kubectl
     kubectx
     kustomize
+    kubectl-explore
     kubecolor
     stern
+    k9s
 
     # core
     jq
@@ -140,11 +142,8 @@
     qemu
     shellcheck
     jsonnet
-    stern
     fzf
     unstable.go
-    kustomize
-    kubecolor
     direnv
     kitty
     nil # nix lsp
