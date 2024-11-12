@@ -1,5 +1,3 @@
-(exec-path-from-shell-initialize) ;; use $PATH
-
 (which-key-mode)
 
 (global-company-mode)

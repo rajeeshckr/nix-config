@@ -22,6 +22,10 @@
 (setq savehist-file "~/.emacs_history")
 
 ;; Tramp
+(require 'tramp-sh)
+(setq tramp-remote-path
+    (append tramp-remote-path
+ 	    '(tramp-own-remote-path)))
 (require 'tramp)
 (add-to-list 'tramp-remote-path "/run/current-system/profile/bin")
 (add-to-list 'tramp-remote-path "/run/current-system/profile/sbin")

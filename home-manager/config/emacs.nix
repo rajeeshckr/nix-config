@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   xdg = {
-    # zsh needs to source the profile.d scripts
+    # emacs requires XDG_CONFIG_HOME to be set
     # example:
     #   '. ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh'
     enable = true;
