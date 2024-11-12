@@ -356,6 +356,7 @@
   # Enable the OpenSSH daemon.
   services.openssh = {
     extraConfig = ''
+    PubkeyAuthOptions verify-required
     Match Group sftponly
       ChrootDirectory /srv/share/public
       ForceCommand internal-sftp
@@ -671,21 +672,6 @@
      sslKey = "${config.security.acme.certs."murmur.samlockart.com".directory}/key.pem";
      sslCert = "${config.security.acme.certs."murmur.samlockart.com".directory}/fullchain.pem";
    };
-
-  systemd.services.llamafile = {
-    description = "Runs a llamafile";
-
-    # make sure tailscale is running before trying to connect to tailscale
-    after = [ "network.target" ];
-    wants = [ "network.target"];
-    wantedBy = [ "multi-user.target" ];
-
-    serviceConfig.Type = "exec";
-
-    script = with pkgs; ''
-      /srv/share/public/llamafile/entrypoint --server --host 0.0.0.0 --port 8080
-    '';
-  };
 
   security.acme.certs."murmur.samlockart.com" = {
     group = "murmur";
