@@ -407,6 +407,8 @@
 
   # Enable the OpenSSH daemon.
   services.openssh = {
+    # support yubikey
+    # https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html
     extraConfig = ''
     PubkeyAuthOptions verify-required
     Match Group sftponly
