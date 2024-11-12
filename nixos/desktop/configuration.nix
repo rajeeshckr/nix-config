@@ -132,6 +132,9 @@
     # fun
     unstable.lutris
     unstable.shadps4
+
+    # 3d
+    super-slicer-latest
   ];
 
 

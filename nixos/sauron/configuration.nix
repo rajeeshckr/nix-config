@@ -246,7 +246,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     borgbackup
-    vim
     ipmiutil
     ipmitool
     steamcmd
@@ -254,6 +253,7 @@
     jellyfin
     jellyfin-web
     jellyfin-ffmpeg
+    docker # todo - replace with podman
   ];
 
   services.pvpgn = {
