@@ -150,6 +150,7 @@
     rust-analyzer
 
     # graphical
+    yubikey-manager
     keepassxc
   ];
 
