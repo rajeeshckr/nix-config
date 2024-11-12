@@ -66,6 +66,32 @@
   };
 
   ## services
+  services.tailscaleAuth = {
+    enable = true;
+  };
+
+  # https://nixos.org/manual/nixos/stable/#module-services-prometheus-exporters
+  services.prometheus.exporters.node = {
+    enable = true;
+    port = 9000;
+    # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/services/monitoring/prometheus/exporters.nix
+    enabledCollectors = [ "systemd" ];
+    # /nix/store/zgsw0yx18v10xa58psanfabmg95nl2bb-node_exporter-1.8.1/bin/node_exporter  --help
+    extraFlags = [ "--collector.ethtool" "--collector.softirqs" "--collector.tcpstat" "--collector.wifi" ];
+  };
+
+  services.prometheus = {
+    enable = true;
+    globalConfig.scrape_interval = "10s"; # "1m"
+    scrapeConfigs = [
+    {
+      job_name = "node";
+      static_configs = [{
+        targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ];
+      }];
+    }
+    ];
+  }; 
 
   services.nginx = {
     enable = true;
@@ -144,6 +170,23 @@
         proxyPass = "http://127.0.0.1:8096";
       };
     };
+    virtualHosts."pass.iced.cool" = {
+      forceSSL = true;
+      enableACME = true;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString config.services.vaultwarden.config.ROCKET_PORT}";
+        recommendedProxySettings = true;
+      };
+    };
+    virtualHosts."www.iced.cool" = {
+      # catch all
+      forceSSL = true;
+      enableACME = true;
+      default = true;
+      locations."/" = {
+        return = 404;
+      };
+    };
     virtualHosts."llama.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
@@ -153,14 +196,18 @@
         recommendedProxySettings = true;
       };
     };
-    virtualHosts."grafana.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
+    virtualHosts.${toString config.services.grafana.settings.server.domain} = {
+      forceSSL = true;
+      enableACME = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.grafana.settings.server.http_port}";
-        proxyWebsockets = true;
+        proxyPass = "${toString config.services.grafana.settings.server.protocol}://${toString config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}";
         recommendedProxySettings = true;
+        proxyWebsockets = true;
       };
+    };
+    tailscaleAuth = {
+      enable = true;
+      virtualHosts = [config.services.grafana.settings.server.domain];
     };
     virtualHosts."sonarr.middleearth.samlockart.com" = {
       forceSSL = false;
@@ -258,10 +305,15 @@
 
   services.pvpgn = {
     enable = true;
-    bnetd.logFile = "/var/log/bnetd.log";
+    bnetd = {
+      servername = "WankNet";
+      logFile = "/var/log/bnetd.log";
+    };
     localStateDir = "/srv/data/pvpgn";
     openFirewall = true;
     news = ''
+      {2024-10-16}
+
       Welcome to the jungle.
     '';
   };
@@ -461,10 +513,11 @@
     settings = {
         server = {
           domain = "grafana.middleearth.samlockart.com";
-          root_url = "http://grafana.middleearth.samlockart.com/grafana";
+          root_url = "http://${toString config.services.grafana.settings.server.domain}/";
+          protocol = "https";
           http_port = 3000;
           http_addr = "127.0.0.1";
-          serve_from_sub_path = true;
+          serve_from_sub_path = false;
         };
     };
   };
@@ -481,6 +534,16 @@
       /srv/share/emma         192.168.0.0/255.255.255.0(rw,fsid=0,no_subtree_check) 100.64.0.0/255.255.255.0(rw,fsid=0,no_subtree_check)
       /srv/share/public      192.168.0.0/255.255.255.0(rw,nohide,insecure,no_subtree_check) 100.64.0.0/255.255.255.0(rw,nohide,insecure,no_subtree_check)
   '';
+  };
+  services.vaultwarden = {
+    enable = true;
+    backupDir = "/srv/data/vaultwarden";
+    config = {
+      ROCKET_ADDRESS = "127.0.0.1";
+      ROCKET_PORT = 8222;
+      DOMAIN = "https://pass.iced.cool";
+      SIGNUPS_ALLOWED = false; # sorry lads :^)
+    };
   };
 
   # Syncthing
@@ -589,10 +652,9 @@
       home = "/srv/data/transmission";
       download-dir = "/srv/media/downloads";
       incomplete-dir = "/srv/media/downloads/.incomplete";
-      watch-dir = "/srv/share/public";
-      watch-dir-enable = true;
       trash-original-torrent-files = true;
       rpc-bind-address = "0.0.0.0";
+      rpc-port = 9091;
       rpc-whitelist = "127.0.0.1,192.168.0.*,100.64.0.*";
       rpc-authentication-required = true;
       ratio-limit = "0.0";
@@ -654,7 +716,6 @@
         file = ../../secrets/transmission-credentials.age;
         owner = "transmission";
         group = "transmission";
-        mode = "700";
       };
     };
   };
