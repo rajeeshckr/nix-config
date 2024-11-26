@@ -62,6 +62,7 @@
     awscli2
     vendir
     ssm-session-manager-plugin
+    amazon-ecr-credential-helper
   ];
 
   # Enable home-manager and git

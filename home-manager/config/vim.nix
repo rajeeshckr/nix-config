@@ -14,8 +14,7 @@
     '';
     plugins = [
         {
-            plugin = pkgs.vimPlugins.vim-sneak;
-            config = "let g:sneak#label = 1";
+            plugin = pkgs.vimPlugins.leap-nvim;
         }
     ];
   };
