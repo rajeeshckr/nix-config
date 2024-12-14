@@ -297,9 +297,9 @@
     ipmitool
     steamcmd
     mailutils
-    jellyfin
-    jellyfin-web
-    jellyfin-ffmpeg
+    unstable.jellyfin
+    unstable.jellyfin-web
+    unstable.jellyfin-ffmpeg
     docker # todo - replace with podman
   ];
 
@@ -665,6 +665,7 @@
   };
 
   services.jellyfin = {
+    package = pkgs.unstable.jellyfin;
     enable = true;
     openFirewall = true;
     dataDir = "/srv/data/jellyfin";
