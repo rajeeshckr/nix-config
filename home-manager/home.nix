@@ -119,6 +119,15 @@
     Docker.target = "${config.home.homeDirectory}/.local/bin/docker";
   };
 
+  home.sessionPath = [
+    "$HOME/.local/bin"
+    "$HOME/go/bin"
+  ];
+
+  home.sessionVariables = {
+    EDITOR = "vim";
+  };
+
   home.packages = with pkgs; [
     # k8s
     kubectl
