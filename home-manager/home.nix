@@ -78,7 +78,7 @@
       }
 
       function kc () {
-          kubectl get --as admin --as-group system:masters --raw "/api/v1/nodes/$1/proxy/configz" "${@:2}" | jq .
+          kubectl get --as admin --as-group system:masters --raw "/api/v1/nodes/$1/proxy/configz" "''${@:2}" | jq .
       }
 
       if [[ -f "/home/sam/vault/kube" ]]; then
