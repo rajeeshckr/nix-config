@@ -73,9 +73,14 @@
       compdef kubecolor=kubectl
       compdef ka=kubectl
 
-      function ka() { 
+      function ka () { 
           kubectl "$1" --as admin --as-group system:masters "''${@:2}";
       }
+
+      function kc () {
+          kubectl get --as admin --as-group system:masters --raw "/api/v1/nodes/$1/proxy/configz" "${@:2}" | jq .
+      }
+
       if [[ -f "/home/sam/vault/kube" ]]; then
         export KUBECONFIG="/home/sam/vault/kube"
       fi
@@ -148,6 +153,9 @@
     kitty
     nil # nix lsp
     rust-analyzer
+
+    # trying out
+    duckdb
 
     # graphical
     yubikey-manager
