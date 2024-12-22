@@ -152,6 +152,16 @@
  #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
+  # open source NVIDIA game streaming service
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true;
+    openFirewall = true;
+    
+  };
+
+
   services.smartd = {
     enable = true;
   };
