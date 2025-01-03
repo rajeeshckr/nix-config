@@ -1,11 +1,12 @@
-{ config, ... }:
-{
+{ config, pkgs, ... }: let 
+  package = config.boot.kernelPackages.nvidiaPackages.stable;
+in {
   nixpkgs.config = {
     nvidia.acceptLicense = true;
   };
 
   # Enable OpenGL
-  hardware.graphics = {
+  hardware.opengl = {
     enable = true;
   };
 
@@ -40,7 +41,7 @@
     nvidiaSettings = true;
 
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = pkgs.nvidia-patch.patch-nvenc (pkgs.nvidia-patch.patch-fbc package);
   };
 
 
