@@ -20,6 +20,7 @@
     ./config/emacs.nix
     ./config/vscode.nix
     ./config/vim.nix
+    ./config/kubernetes.nix
   ];
 
   nixpkgs = {
@@ -171,30 +172,6 @@
     # graphical
     yubikey-manager
   ];
-
-  programs.k9s = {
-    enable = true;
-    plugin = {
-      recreate = {
-        shortCut = "Ctrl+O";
-        descrption = "Recreate nodegroup";
-        scopes = ["ng" "nodegroup"];
-        background = true;
-        command = "kubectl";
-        args = [
-          "annotate"
-          "$RESOURCENAME"
-          "-n"
-          "$NAMESPACE"
-          "nodegroup-operator.compute.zende.sk/restarted-at=now"
-          "--as=admin"
-          "--as-group=system:masters"
-          "-c"
-          "$CONTEXT"
-        ];
-      };
-    };
-  };
 
   programs.vscode = {
     enable = true;
