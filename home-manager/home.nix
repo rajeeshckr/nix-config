@@ -136,7 +136,6 @@
     kubectl-explore
     kubecolor
     stern
-    k9s
 
     # core
     jq
@@ -159,9 +158,11 @@
     fzf
     unstable.go
     direnv
-    kitty
     nil # nix lsp
     rust-analyzer
+
+    # terminals
+    kitty
 
     # trying out
     duckdb
@@ -170,6 +171,30 @@
     # graphical
     yubikey-manager
   ];
+
+  programs.k9s = {
+    enable = true;
+    plugin = {
+      recreate = {
+        shortCut = "Ctrl+O";
+        descrption = "Recreate nodegroup";
+        scopes = ["ng" "nodegroup"];
+        background = true;
+        command = "kubectl";
+        args = [
+          "annotate"
+          "$RESOURCENAME"
+          "-n"
+          "$NAMESPACE"
+          "nodegroup-operator.compute.zende.sk/restarted-at=now"
+          "--as=admin"
+          "--as-group=system:masters"
+          "-c"
+          "$CONTEXT"
+        ];
+      };
+    };
+  };
 
   programs.vscode = {
     enable = true;
