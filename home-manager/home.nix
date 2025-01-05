@@ -169,7 +169,6 @@
 
     # graphical
     yubikey-manager
-    keepassxc
   ];
 
   programs.vscode = {
