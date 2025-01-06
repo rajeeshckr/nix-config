@@ -38,6 +38,42 @@
           ];
         };
 
+        ng-pause = {
+          shortCut = "p";
+          description = "Pause a nodegroup or nodegroup deployment";
+          scopes = ["nodegroups" "nodegroupdeployments"];
+          background = true;
+          command = "ng";
+          args = [
+            "pause"
+            "$RESOURCE_NAME"
+            "$NAME"
+            "-r"
+            "$USER paused using k9s"
+            "--as"
+            "admin"
+            "--as-group"
+            "system:masters"
+          ];
+        };
+
+        ng-resume = {
+          shortCut = "m";
+          description = "Resume a nodegroup or nodegroup deployment";
+          scopes = ["nodegroups" "nodegroupdeployments"];
+          background = true;
+          command = "ng";
+          args = [
+            "resume"
+            "$RESOURCE_NAME"
+            "$NAME"
+            "--as"
+            "admin"
+            "--as-group"
+            "system:masters"
+          ];
+        };
+
         ng-recreate = {
           shortCut = "Ctrl-O";
           description = "Recreate nodegroup";
