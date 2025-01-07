@@ -664,8 +664,8 @@
   systemd.timers."transmission-restart" = {
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnBootSec=1h;
-      OnUnitActiveSec=1h;
+      OnBootSec = "1h";
+      OnUnitActiveSec = "1h";
       Unit = "transmission-restart.service";
     };
   };

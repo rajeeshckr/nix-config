@@ -42,14 +42,5 @@
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-
-
-
-  # Enable the X11 windowing system.
-  services.xserver = {
-    videoDrivers = ["nvidia"];
-    enable = true;
-    xkb.layout = "us";
-  };
 }
 

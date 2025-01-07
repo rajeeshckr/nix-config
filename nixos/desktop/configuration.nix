@@ -32,6 +32,13 @@
     ];
   };
 
+  # Enable the X11 windowing system.
+  services.xserver = {
+    videoDrivers = ["nvidia"];
+    enable = true;
+    xkb.layout = "us";
+  };
+
   # Syncthing
   services.syncthing = {
     enable = true;
