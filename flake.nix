@@ -28,6 +28,9 @@
     # nvidia-patch
     nvidia-patch.url = "github:icewind1991/nvidia-patch-nixos";  
     nvidia-patch.inputs.nixpkgs.follows = "nixpkgs";
+
+    # hardware modules
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = {
@@ -36,6 +39,7 @@
     home-manager,
     agenix,
     pvpgnix,
+    nixos-hardware,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -84,6 +88,13 @@
           # > Our main nixos configuration file <
           ./nixos/configuration.nix
           ./nixos/desktop/configuration.nix
+        ];
+      };
+      laptop = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/laptop/configuration.nix
         ];
       };
     };
