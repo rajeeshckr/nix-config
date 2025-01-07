@@ -661,6 +661,26 @@
     };
   };
 
+  systemd.timers."transmission-restart" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec=1h;
+      OnUnitActiveSec=1h;
+      Unit = "transmission-restart.service";
+    };
+  };
+
+  systemd.services."transmission-restart" = {
+    script = ''
+      set -eu
+      ${pkgs.systemd}/bin/systemctl restart transmission.service
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
+  };
+
   services.jellyfin = {
     package = pkgs.unstable.jellyfin;
     enable = true;
