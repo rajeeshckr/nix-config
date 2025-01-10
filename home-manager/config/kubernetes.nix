@@ -38,15 +38,48 @@
           ];
         };
 
+        kubelet-config = {
+          shortCut = "Ctrl-l";
+          description = "View live kubelet config";
+          scopes = ["node"];
+          background = true;
+          command = "sh";
+          args = [
+            "-c"
+            ''
+              kitty --title "kubelet.yaml - $NAME" sh -c 'kubectl get --as admin --as-group system:masters --raw "/api/v1/nodes/$NAME/proxy/configz" | jq .'
+            ''
+          ]; 
+        };
+
         ng-pause = {
           shortCut = "p";
-          description = "Pause a nodegroup or nodegroup deployment";
-          scopes = ["nodegroups" "nodegroupdeployments"];
+          description = "Pause reconciliation";
+          scopes = ["nodegroups"];
           background = true;
           command = "ng";
           args = [
             "pause"
-            "$RESOURCE_NAME"
+            "ng"
+            "$NAME"
+            "-r"
+            "$USER paused using k9s"
+            "--as"
+            "admin"
+            "--as-group"
+            "system:masters"
+          ];
+        };
+
+        ngd-pause = {
+          shortCut = "p";
+          description = "Pause reconciliation";
+          scopes = ["nodegroupdeployments"];
+          background = true;
+          command = "ng";
+          args = [
+            "pause"
+            "ngd"
             "$NAME"
             "-r"
             "$USER paused using k9s"
@@ -59,19 +92,69 @@
 
         ng-resume = {
           shortCut = "m";
-          description = "Resume a nodegroup or nodegroup deployment";
-          scopes = ["nodegroups" "nodegroupdeployments"];
+          description = "Resume reconciliation";
+          scopes = ["nodegroups"];
           background = true;
           command = "ng";
           args = [
             "resume"
-            "$RESOURCE_NAME"
+            "ng"
             "$NAME"
             "--as"
             "admin"
             "--as-group"
             "system:masters"
           ];
+        };
+
+        ngd-resume = {
+          shortCut = "m";
+          description = "Resume reconciliation";
+          scopes = ["nodegroupdeployments"];
+          background = true;
+          command = "ng";
+          args = [
+            "resume"
+            "ngd"
+            "$NAME"
+            "--as"
+            "admin"
+            "--as-group"
+            "system:masters"
+          ];
+        };
+
+        ngd-restart = {
+          shortCut = "m";
+          description = "Resume reconciliation";
+          scopes = ["nodegroups"];
+          background = true;
+          command = "ng";
+          args = [
+            "resume"
+            "ng"
+            "$NAME"
+            "--as"
+            "admin"
+            "--as-group"
+            "system:masters"
+          ];
+        };
+
+        ngd-recreate = {
+          shortCut = "Ctrl-O";
+          description = "Force recreation of active nodegroup";
+          scopes = ["nodegroupdeployments"];
+          background = true;
+          command = "ng";
+          args = [
+            "restart"
+            "$NAME"
+            "--as"
+            "admin"
+            "--as-group"
+            "system:masters"
+          ]; 
         };
 
         ng-recreate = {
