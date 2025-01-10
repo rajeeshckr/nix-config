@@ -132,6 +132,9 @@
 
     # 3d
     super-slicer-latest
+
+    # misc
+    calibre
   ];
 
 
