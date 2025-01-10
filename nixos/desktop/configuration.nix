@@ -32,13 +32,6 @@
     ];
   };
 
-  # Enable the X11 windowing system.
-  services.xserver = {
-    videoDrivers = ["nvidia"];
-    enable = true;
-    xkb.layout = "us";
-  };
-
   # Syncthing
   services.syncthing = {
     enable = true;
@@ -108,6 +101,7 @@
   services.xserver = {
     enable = true;
     xkb.layout = "us";
+    videoDrivers = ["nvidia"];
     desktopManager = {
       xterm.enable = false;
       xfce.enable = true;
@@ -162,6 +156,12 @@
     capSysAdmin = true;
     openFirewall = true;
     
+  };
+
+  # VR streaming
+  programs.alvr = {
+    enable = true;
+    openFirewall = true;
   };
 
   services.smartd = {
