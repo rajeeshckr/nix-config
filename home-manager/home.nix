@@ -142,7 +142,7 @@
     jq
     git
     gh
-    yq
+    yq-go
     ripgrep
     direnv
 
