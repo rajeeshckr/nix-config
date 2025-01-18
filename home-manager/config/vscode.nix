@@ -21,9 +21,12 @@
         # terraform
         hashicorp.hcl
 
-        # linux
+        # system
         timonwong.shellcheck
         coolbear.systemd-unit-file
+
+        # openscad
+        vscode-extensions.antyos.openscad
 
         # extras
         signageos.signageos-vscode-sops
