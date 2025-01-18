@@ -130,6 +130,8 @@
 
     # 3d
     super-slicer-latest
+    openscad
+    openscad-lsp
 
     # misc
     calibre

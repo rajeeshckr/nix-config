@@ -167,7 +167,6 @@
 
     # trying out
     duckdb
-    mitmproxy2swagger # https://jero.zone/posts/reverse-engineering-apis
 
     # graphical
     yubikey-manager
