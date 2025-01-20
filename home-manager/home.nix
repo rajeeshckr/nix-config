@@ -86,8 +86,13 @@
         export KUBECONFIG="/home/sam/vault/kube"
       fi
 
-     # Load session vars
-     . ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh
+      # Load session vars
+      . ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh
+
+      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+      fi
+
     '';
     shellAliases = {
       gst = "git status -s -b";
@@ -241,7 +246,9 @@
       ".direnv/"
     ];
     extraConfig = {
-      url."ssh://git@github.com/".insteadOf = "https://github.com/";
+      url."ssh://git@github.com/" = {
+        insteadOf = "https://github.com/";
+      };
       push.autoSetupRemote = true;
       core.excludesfile = "${config.home.homeDirectory}/.gitignore";
     };
