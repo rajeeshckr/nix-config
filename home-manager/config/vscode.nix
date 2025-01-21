@@ -26,7 +26,7 @@
         coolbear.systemd-unit-file
 
         # openscad
-        vscode-extensions.antyos.openscad
+        antyos.openscad
 
         # extras
         signageos.signageos-vscode-sops

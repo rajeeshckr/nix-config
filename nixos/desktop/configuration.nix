@@ -127,6 +127,7 @@
     # fun
     unstable.lutris
     unstable.shadps4
+    r2modman
 
     # 3d
     super-slicer-latest
