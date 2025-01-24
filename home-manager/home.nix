@@ -86,6 +86,8 @@
         export KUBECONFIG="/home/sam/vault/kube"
       fi
 
+      export GOPRIVATE="github.com/alam0rt/*,github.com/zendesk/*"
+
       # Load session vars
       . ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh
 
@@ -246,8 +248,10 @@
       ".direnv/"
     ];
     extraConfig = {
-      url."ssh://git@github.com/" = {
-        insteadOf = "https://github.com/";
+      url = {
+        "ssh://git@github.com/" = {
+          insteadOf = "https://github.com/";
+        };
       };
       push.autoSetupRemote = true;
       core.excludesfile = "${config.home.homeDirectory}/.gitignore";

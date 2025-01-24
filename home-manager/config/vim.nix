@@ -12,10 +12,18 @@
       set expandtab
 
     '';
-    plugins = [
-        {
-            plugin = pkgs.vimPlugins.leap-nvim;
+    plugins = with pkgs.vimPlugins; [
+        leap-nvim
+        { 
+          plugin = vim-plug;
+          config = ''
+            Plug 'ggml-org/llama.vim'
+          '';
         }
+        vim-nix
+        vim-go
+        vim-ruby
+        vim-startify
     ];
   };
 }
