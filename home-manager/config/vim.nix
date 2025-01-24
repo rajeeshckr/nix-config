@@ -10,16 +10,9 @@
       set softtabstop =4
       set shiftwidth  =4
       set expandtab
-
     '';
     plugins = with pkgs.vimPlugins; [
         leap-nvim
-        { 
-          plugin = vim-plug;
-          config = ''
-            Plug 'ggml-org/llama.vim'
-          '';
-        }
         vim-nix
         vim-go
         vim-ruby
