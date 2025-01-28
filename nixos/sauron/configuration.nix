@@ -93,6 +93,16 @@
     ];
   }; 
 
+  # ollama / LLM
+  services.ollama = {
+    enable = true;
+    acceleration = "cuda";
+    loadModels = [
+      "deepseek-r1:32b"
+    ];
+  };
+
+
   services.nginx = {
     enable = true;
 
