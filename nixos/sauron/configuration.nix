@@ -664,6 +664,7 @@
       rpc-bind-address = "0.0.0.0";
       rpc-port = 9091;
       rpc-whitelist = "127.0.0.1,192.168.0.*,100.64.0.*";
+      rpc-host-whitelist-enabled = false;
       rpc-authentication-required = false;
       ratio-limit = "0.0";
       ratio-limit-enabled = true;
