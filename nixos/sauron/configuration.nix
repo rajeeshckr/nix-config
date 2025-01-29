@@ -199,7 +199,7 @@
         return = 404;
       };
     };
-    virtualHosts."ollama.middleearth.samlockart.com" = {
+    virtualHosts."sauron.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
       locations."/" = {
