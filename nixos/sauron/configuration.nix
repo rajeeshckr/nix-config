@@ -102,7 +102,7 @@
       "deepseek-r1:32b"
     ];
     environmentVariables = {
-      OLLAMA_ORIGINS = "*.middleearth.samlockart.com";
+      OLLAMA_ORIGINS = "sauron.middleearth.samlockart.com";
     };
   };
 
