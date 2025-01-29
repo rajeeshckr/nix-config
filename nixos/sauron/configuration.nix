@@ -199,10 +199,10 @@
         return = 404;
       };
     };
-    virtualHosts."ollama.middleearth.samlockart.com" = {
+    virtualHosts."sauron.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
-      locations."/" = {
+      locations."/ollama" = {
         proxyPass = "http://127.0.0.1:${toString config.services.ollama.port}";
         proxyWebsockets = true;
         recommendedProxySettings = true;
