@@ -30,7 +30,11 @@
     };
 
   fileSystems."/srv/vault" =
-    { device = "mordor/vault";
+    { 
+      device = "mordor/vault";
+      # fix age secrets not available to services (sometimes)
+      # https://github.com/ryantm/agenix/issues/45#issuecomment-958146520
+      neededForBoot = true;
       fsType = "zfs";
     };
 

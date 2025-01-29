@@ -741,7 +741,7 @@
 
   # secrets
   age = {
-    identityPaths = ["/srv/vault/ssh_keys/id_rsa"];
+    identityPaths = ["/srv/vault/ssh_keys/id_rsa"]; # requires `/srv/vault` to be mounted before agenix can be used
     secrets = {
       borg = {
         file = ../../secrets/borg.age;
@@ -759,6 +759,7 @@
       };
     };
   };
+
 
   services.murmur = {
      enable = true;
