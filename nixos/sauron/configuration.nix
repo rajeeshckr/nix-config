@@ -96,6 +96,7 @@
   # ollama / LLM
   services.ollama = {
     enable = true;
+    port = 11434;
     acceleration = "cuda";
     loadModels = [
       "deepseek-r1:32b"
@@ -198,11 +199,11 @@
         return = 404;
       };
     };
-    virtualHosts."llama.middleearth.samlockart.com" = {
+    virtualHosts."ollama.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:8080";
+        proxyPass = "http://127.0.0.1:${toString config.services.ollama.port}";
         proxyWebsockets = true;
         recommendedProxySettings = true;
       };
