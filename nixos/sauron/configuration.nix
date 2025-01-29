@@ -103,6 +103,7 @@
     ];
     environmentVariables = {
       OLLAMA_ORIGINS = "http://sauron.middleearth.samlockart.com";
+      OLLAMA_DEBUG = "true";
     };
   };
 
