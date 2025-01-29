@@ -199,10 +199,10 @@
         return = 404;
       };
     };
-    virtualHosts."sauron.middleearth.samlockart.com" = {
+    virtualHosts."ollama.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
-      locations."/ollama" = {
+      locations."/" = {
         proxyPass = "http://127.0.0.1:${toString config.services.ollama.port}";
         proxyWebsockets = true;
         recommendedProxySettings = true;
@@ -219,7 +219,10 @@
     };
     tailscaleAuth = {
       enable = true;
-      virtualHosts = [config.services.grafana.settings.server.domain];
+      virtualHosts = [
+        config.services.grafana.settings.server.domain
+        "jackett.middleearth.samlockart.com"
+      ];
     };
     virtualHosts."sonarr.middleearth.samlockart.com" = {
       forceSSL = false;
