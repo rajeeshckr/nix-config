@@ -177,6 +177,11 @@
 
     # graphical
     yubikey-manager
+
+    # CAD / 3d
+    openscad
+    openscad-lsp
+    super-slicer-latest
   ];
 
   programs.vscode = {
