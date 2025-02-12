@@ -95,6 +95,11 @@
         . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
       fi
 
+      # kubectl_config.git
+      if [ -e "$HOME/.nix-profile/libexec/kubectl_stuff.bash" ]; then
+        . "$HOME/.nix-profile/libexec/kubectl_stuff.bash"
+      fi
+
     '';
     shellAliases = {
       gst = "git status -s -b";
