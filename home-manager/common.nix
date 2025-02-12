@@ -186,7 +186,7 @@
     # CAD / 3d
     openscad
     openscad-lsp
-    super-slicer-latest
+    # super-slicer-latest - see linux.nix
   ];
 
   programs.vscode = {
