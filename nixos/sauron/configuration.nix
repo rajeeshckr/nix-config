@@ -244,6 +244,13 @@
         proxyPass = "http://127.0.0.1:9117";
       };
     };
+    virtualHosts."bazarr.middleearth.samlockart.com" = {
+      forceSSL = false;
+      enableACME = false;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString config.services.bazarr.listenPort}";
+      };
+    };
     virtualHosts."radarr.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
@@ -726,6 +733,11 @@
   services.jackett = {
     enable = true;
     dataDir = "/srv/data/jackett";
+    openFirewall = true;
+  };
+
+  services.bazarr = {
+    enable = true;
     openFirewall = true;
   };
 
