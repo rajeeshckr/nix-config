@@ -740,6 +740,7 @@
     enable = true;
     openFirewall = true;
   };
+  users.users.bazarr.extraGroups = ["sonarr" "radarr"];
 
   services.smartd = {
     enable = true;
