@@ -173,6 +173,7 @@
 
     # trying out
     duckdb
+    unstable.aider-chat
 
     # graphical
     yubikey-manager
