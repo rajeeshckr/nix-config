@@ -123,6 +123,7 @@
     ghidra
     wireshark
     wineWowPackages.stable
+    winetricks
 
     # fun
     unstable.lutris
