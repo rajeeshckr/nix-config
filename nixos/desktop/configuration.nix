@@ -120,7 +120,6 @@
     gnupg
 
     # dev
-    ghidra
     wireshark
     wineWowPackages.stable
     winetricks
