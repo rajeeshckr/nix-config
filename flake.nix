@@ -25,6 +25,10 @@
     pvpgnix.url = "github:alam0rt/pvpgnix";
     pvpgnix.inputs.nixpkgs.follows = "nixpkgs";
 
+    # pcsx-redux
+    pcsx-redux.url = "github:grumpycoders/pcsx-redux";
+    pcsx-redux.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
     # nvidia-patch
     nvidia-patch.url = "github:icewind1991/nvidia-patch-nixos";  
     nvidia-patch.inputs.nixpkgs.follows = "nixpkgs";
@@ -40,6 +44,7 @@
     agenix,
     pvpgnix,
     nixos-hardware,
+    pcsx-redux,
     ...
   } @ inputs: let
     inherit (self) outputs;

@@ -31,6 +31,7 @@
   home.packages = with pkgs; [
     # CAD / 3d
     super-slicer-latest # doesn't build on darwin
+    inputs.pcsx-redux.packages.${system}.pcsx-redux
   ];
 
   # Nicely reload system units when changing configs
