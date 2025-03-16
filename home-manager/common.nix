@@ -226,6 +226,7 @@
   programs.home-manager.enable = true;
   programs.git = {
     enable = true;
+    lfs.enable = true;
     userName = "alam0rt";
     userEmail = "sam@samlockart.com";
     aliases = {
