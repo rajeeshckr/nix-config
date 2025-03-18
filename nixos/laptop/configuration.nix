@@ -7,15 +7,17 @@
 {
   imports =
     [
+      ../config/graphical
+      ../config/common
+      ../config/network
       ../config/nvidia.nix
       ../config/home-manager.nix
-      ../config/graphical
-      ../config/network
       ./hardware-configuration.nix
     ];
 
   networking.hostName = "laptop"; # Define your hostname.
   networking.hostId = "deadbabe";
+
   # Pick only one of the below networking options.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 

@@ -11,4 +11,8 @@
   programs.zsh = {
     enable = true;
   };
+
+  services.smartd = {
+    enable = true;
+  };
 }

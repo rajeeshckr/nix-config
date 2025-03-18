@@ -7,8 +7,11 @@
 {
   imports =
     [
-      ../config/nvidia.nix
+      ../config/graphical
+      ../config/common
+      ../config/network
       ../config/home-manager.nix
+      ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix
     ];
@@ -32,8 +35,7 @@
   };
 
 
-  # Enable the X11 windowing system.
-  services.xserver.videoDrivers = ["nvidia"];
+
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -83,12 +85,6 @@
     capSysAdmin = true;
     openFirewall = true;
     
-  };
-
-  # VR streaming
-  programs.alvr = {
-    enable = true;
-    openFirewall = true;
   };
 
   services.smartd = {
