@@ -10,6 +10,7 @@
       ../config/zfs.nix
       ../config/nvidia-patch.nix
       ../config/home-manager.nix
+      ../config/llm.nix
       ./hardware-configuration.nix
     ];
 

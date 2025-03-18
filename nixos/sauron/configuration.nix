@@ -93,23 +93,6 @@
     ];
   }; 
 
-  # ollama / LLM
-  services.ollama = {
-    enable = false;
-    port = 11434;
-    host = "0.0.0.0";
-    acceleration = "cuda";
-    openFirewall = true;
-    loadModels = [
-      "deepseek-r1:32b"
-    ];
-    environmentVariables = {
-      OLLAMA_ORIGINS = "http://sauron.middleearth.samlockart.com";
-      OLLAMA_DEBUG = "true";
-    };
-  };
-
-
   services.nginx = {
     enable = true;
 
