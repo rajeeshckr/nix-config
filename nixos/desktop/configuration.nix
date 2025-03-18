@@ -12,52 +12,20 @@
       ../config/home-manager.nix
       ../config/llm.nix
       ../config/common.nix
+      ../config/nfs_mounts.nix
       ./hardware-configuration.nix
     ];
 
   networking.hostName = "desktop"; # Define your hostname.
   networking.hostId = "cc74da59";
-  # Pick only one of the below networking options.
+
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  networking.firewall = {
-    enable = false; # do i really need this??
-    trustedInterfaces = [ "tailscale0" ];
-    checkReversePath = "loose";
-    allowedTCPPorts = [
-      8384 22000 # syncthing
-      22 # ssh via tailscale
-      6112 # wc3
-    ];
-    allowedUDPPorts = [
-      6112
-    ];
-  };
+  networking.firewall.enable = false;
 
-  # Syncthing
-  services.syncthing = {
-    enable = true;
-    user = "sam";
-    dataDir = "/home/sam/vault";    # Default folder for new synced folders
-    configDir = "/home/sam/.config/syncthing";   # Folder for Syncthing's settings and keys
-    guiAddress = "http://127.0.0.1:8384";
-    settings = {
-      devices = {
-        "laptop"   = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
-      };
-    };
-  };
+  services.syncthing.settings.devices."laptop" = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
 
-  # networking
-  services.tailscale = {
-    enable = true;
-    openFirewall = true;
-    extraUpFlags = ["--login-server=https://hs.samlockart.com"];
-  };
-
-  programs.wireshark = {
-    enable = true;
-  };
+  programs.wireshark.enable = true;
 
   services.avahi = {
     enable = true;
@@ -67,47 +35,8 @@
   };
 
 
-  fileSystems."/mnt/share/sam" = {
-    device = "sauron:/srv/share/sam";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/share/public" = {
-    device = "sauron:/srv/share/public";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/downloads" = {
-    device = "sauron:/srv/media/downloads";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/tv" = {
-    device = "sauron:/srv/media/tv";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/movies" = {
-    device = "sauron:/srv/media/movies";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-  
   # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    xkb.layout = "us";
-    videoDrivers = ["nvidia"];
-    desktopManager = {
-      xterm.enable = false;
-      xfce.enable = true;
-    };
-  };
- # services.displayManager.defaultSession = "xfce";
+  services.xserver.videoDrivers = ["nvidia"];
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget

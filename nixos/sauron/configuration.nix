@@ -73,7 +73,7 @@
 
   # https://nixos.org/manual/nixos/stable/#module-services-prometheus-exporters
   services.prometheus.exporters.node = {
-    enable = true;
+    enable = false;
     port = 9000;
     # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/services/monitoring/prometheus/exporters.nix
     enabledCollectors = [ "systemd" ];
@@ -82,7 +82,7 @@
   };
 
   services.prometheus = {
-    enable = true;
+    enable = false;
     globalConfig.scrape_interval = "10s"; # "1m"
     scrapeConfigs = [
     {
@@ -519,7 +519,7 @@
   # monitoring
   # grafana configuration
   services.grafana = {
-    enable = true;
+    enable = false;
     settings = {
         server = {
           domain = "grafana.middleearth.samlockart.com";
@@ -730,11 +730,7 @@
     enable = true;
   };
 
-  services.tailscale = {
-    enable = true;
-    authKeyFile = config.age.secrets.tailscale-authkey.path;
-    extraUpFlags = ["--login-server=https://hs.samlockart.com"];
-  };
+  services.tailscale.authKeyFile = config.age.secrets.tailscale-authkey.path;
 
   # secrets
   age = {
