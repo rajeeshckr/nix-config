@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      .../config/common
       ../config/nvidia.nix
     ];
 
@@ -722,10 +723,6 @@
     openFirewall = true;
   };
   users.users.bazarr.extraGroups = ["sonarr" "radarr"];
-
-  services.smartd = {
-    enable = true;
-  };
 
   services.tailscale.authKeyFile = config.age.secrets.tailscale-authkey.path;
 

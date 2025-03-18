@@ -27,16 +27,6 @@
 
   programs.wireshark.enable = true;
 
-  services.avahi = {
-    enable = true;
-    reflector = true;
-    allowInterfaces = ["tailscale0" "enp4s0" ];
-    allowPointToPoint = true;
-  };
-
-
-
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -63,8 +53,6 @@
     calibre
   ];
 
-
-
   # bluetooth
   services.blueman.enable = true;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
@@ -75,20 +63,7 @@
     enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
- #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  };
-
-  # open source NVIDIA game streaming service
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;
-    
-  };
-
-  services.smartd = {
-    enable = true;
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];
