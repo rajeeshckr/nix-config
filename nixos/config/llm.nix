@@ -1,4 +1,6 @@
-{ config, pkgs, ... }: let {
+{ pkgs, ... }:
+
+{
   # ollama / LLM
   services.ollama = {
     enable = false;
