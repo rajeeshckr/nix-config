@@ -61,7 +61,7 @@
   };
 
   programs.zsh = {
-    enable = true;
+    enable = true; # must also be enabled in nixos
     initExtra = ''
       autoload -z edit-command-line
       zle -N edit-command-line

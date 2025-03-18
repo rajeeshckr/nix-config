@@ -11,6 +11,7 @@
       ../config/nvidia-patch.nix
       ../config/home-manager.nix
       ../config/llm.nix
+      ../config/common.nix
       ./hardware-configuration.nix
     ];
 

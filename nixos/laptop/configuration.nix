@@ -10,6 +10,7 @@
       ../config/zfs.nix
       ../config/nvidia-patch.nix
       ../config/home-manager.nix
+      ../config/common.nix
       ./hardware-configuration.nix
     ];
 
@@ -116,7 +117,6 @@
     gnupg
 
     # dev
-    ghidra
     wireshark
     wineWowPackages.stable
     winetricks
