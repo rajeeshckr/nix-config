@@ -7,12 +7,9 @@
 {
   imports =
     [
-      ../config/zfs.nix
-      ../config/nvidia-patch.nix
+      ../config/nvidia.nix
       ../config/home-manager.nix
       ../config/llm.nix
-      ../config/common.nix
-      ../config/nfs_mounts.nix
       ./hardware-configuration.nix
     ];
 

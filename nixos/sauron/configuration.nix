@@ -8,10 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../config/zfs.nix
       ../config/nvidia.nix
-      ../config/users.nix
-      ../config/common.nix
     ];
 
   # Use the systemd-boot EFI boot loader.

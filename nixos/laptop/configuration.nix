@@ -7,10 +7,8 @@
 {
   imports =
     [
-      ../config/zfs.nix
-      ../config/nvidia-patch.nix
+      ../config/nvidia.nix
       ../config/home-manager.nix
-      ../config/common
       ../config/graphical
       ../config/network
       ./hardware-configuration.nix
@@ -24,7 +22,7 @@
   networking.firewall.enable = true;
 
   # Syncthing config
-  services.syncthing.devices = {
+  services.syncthing.settings.devices = {
     "laptop"   = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
     "desktop"   = { id = "F7G62MY-FWFWFNY-PYVBZQE-S4EXYDX-IIPF4AQ-YAKJVP3-4TZXCKT-NAUTJQU"; };
   };
@@ -33,9 +31,10 @@
     enable = true;
   };
 
-  # Enable the X11 windowing system.
+  # reduce power consumption
   services.xserver.videoDrivers = ["i915"];
 
+  # enable prime
   hardware.nvidia.prime = {
     nvidiaBusId = "PCI:1:0:0";
     intelBusId = "PCI:0:2:0";
