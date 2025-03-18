@@ -177,7 +177,6 @@
 
     # graphical
     yubikey-manager
-    p7zip
     p7zip-rar
     vlc
 
