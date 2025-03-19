@@ -7,27 +7,21 @@
 {
   imports =
     [
-      ../config/zfs.nix
-      ../config/nvidia-patch.nix
+      ../config/graphical
+      ../config/common
+      ../config/network
+      ../config/nvidia.nix
       ../config/home-manager.nix
       ./hardware-configuration.nix
     ];
 
   networking.hostName = "laptop"; # Define your hostname.
   networking.hostId = "deadbabe";
+
   # Pick only one of the below networking options.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  networking.firewall = {
-    enable = true; # do i really need this??
-    trustedInterfaces = [ "tailscale0" ];
-    checkReversePath = "loose";
-    allowedTCPPorts = [
-      8384 22000 # syncthing
-      22 # ssh via tailscale
-    ];
-    allowedUDPPorts = [];
-  };
+  networking.firewall.enable = true;
 
   # Syncthing
   services.syncthing = {
@@ -44,59 +38,14 @@
     };
   };
 
-  # networking
-  services.tailscale = {
-    enable = true;
-    openFirewall = true;
-    extraUpFlags = ["--login-server=https://hs.samlockart.com"];
-  };
-
   programs.wireshark = {
     enable = true;
   };
 
-  fileSystems."/mnt/share/sam" = {
-    device = "sauron:/srv/share/sam";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
+  # reduce power consumption
+  services.xserver.videoDrivers = ["i915"];
 
-  fileSystems."/mnt/share/public" = {
-    device = "sauron:/srv/share/public";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/downloads" = {
-    device = "sauron:/srv/media/downloads";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/tv" = {
-    device = "sauron:/srv/media/tv";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/movies" = {
-    device = "sauron:/srv/media/movies";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-  
-  # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    xkb.layout = "us";
-    videoDrivers = ["i915"];
-    desktopManager = {
-      xterm.enable = false;
-      xfce.enable = true;
-    };
-  };
-  services.displayManager.defaultSession = "xfce";
-
+  # enable prime
   hardware.nvidia.prime = {
     nvidiaBusId = "PCI:1:0:0";
     intelBusId = "PCI:0:2:0";
@@ -116,7 +65,6 @@
     gnupg
 
     # dev
-    ghidra
     wireshark
     wineWowPackages.stable
     winetricks
@@ -139,11 +87,7 @@
     enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
- #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  };
-
-  services.smartd = {
-    enable = true;
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];

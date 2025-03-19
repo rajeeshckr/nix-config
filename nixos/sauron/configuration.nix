@@ -8,9 +8,9 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../config/zfs.nix
+      ../config/common
+      ../config/network
       ../config/nvidia.nix
-      ../config/users.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -72,7 +72,7 @@
 
   # https://nixos.org/manual/nixos/stable/#module-services-prometheus-exporters
   services.prometheus.exporters.node = {
-    enable = true;
+    enable = false;
     port = 9000;
     # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/services/monitoring/prometheus/exporters.nix
     enabledCollectors = [ "systemd" ];
@@ -81,7 +81,7 @@
   };
 
   services.prometheus = {
-    enable = true;
+    enable = false;
     globalConfig.scrape_interval = "10s"; # "1m"
     scrapeConfigs = [
     {
@@ -194,6 +194,14 @@
       locations."/" = {
         proxyPass = "http://127.0.0.1:${toString config.services.ollama.port}";
         proxyWebsockets = true;
+        recommendedProxySettings = true;
+      };
+    };
+    virtualHosts."open-webui.middleearth.samlockart.com" = {
+      forceSSL = false;
+      enableACME = false;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString config.services.open-webui.port}";
         recommendedProxySettings = true;
       };
     };
@@ -518,7 +526,7 @@
   # monitoring
   # grafana configuration
   services.grafana = {
-    enable = true;
+    enable = false;
     settings = {
         server = {
           domain = "grafana.middleearth.samlockart.com";
@@ -556,6 +564,15 @@
     };
   };
 
+  services.open-webui = {
+    enable = true;
+    openFirewall = true;
+    port = 11111;
+    environment = {
+      OLLAMA_API_BASE_URL = "http://desktop:11434";
+    };
+  };
+
   # Syncthing
   services.syncthing = {
     enable = true;
@@ -566,8 +583,10 @@
     overrideFolders = true;     # overrides any folders added or deleted through the WebUI
     guiAddress = "http://0.0.0.0:8384";
     settings = {
+      # TODO: use declarative node configuration
+      # https://wiki.nixos.org/wiki/Syncthing
       devices = {
-        "laptop"   = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
+        "laptop"   = { id = "5ATZ7LD-C3AYIMS-EXQZILG-2A743HY-4Y7ULQY-RODJR7F-GO43W6X-CLXDAAA"; };
         "desktop"   = { id = "F7G62MY-FWFWFNY-PYVBZQE-S4EXYDX-IIPF4AQ-YAKJVP3-4TZXCKT-NAUTJQU"; };
       };
       folders = {
@@ -634,7 +653,7 @@
   ## alert on failure
   systemd.services = {
     "notify-problems@" = {
-      enable = true;
+      enable = false; # need to fix sendgrid shit
       serviceConfig.User = "root";
       environment.SERVICE = "%i";
       script = ''
@@ -716,6 +735,7 @@
   services.jackett = {
     enable = true;
     dataDir = "/srv/data/jackett";
+    package = pkgs.unstable.jackett;
     openFirewall = true;
   };
 
@@ -725,15 +745,7 @@
   };
   users.users.bazarr.extraGroups = ["sonarr" "radarr"];
 
-  services.smartd = {
-    enable = true;
-  };
-
-  services.tailscale = {
-    enable = true;
-    authKeyFile = config.age.secrets.tailscale-authkey.path;
-    extraUpFlags = ["--login-server=https://hs.samlockart.com"];
-  };
+  services.tailscale.authKeyFile = config.age.secrets.tailscale-authkey.path;
 
   # secrets
   age = {

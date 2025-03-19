@@ -7,31 +7,21 @@
 {
   imports =
     [
-      ../config/zfs.nix
-      ../config/nvidia-patch.nix
+      ../config/graphical
+      ../config/common
+      ../config/network
       ../config/home-manager.nix
+      ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix
     ];
 
   networking.hostName = "desktop"; # Define your hostname.
   networking.hostId = "cc74da59";
-  # Pick only one of the below networking options.
+
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  networking.firewall = {
-    enable = false; # do i really need this??
-    trustedInterfaces = [ "tailscale0" ];
-    checkReversePath = "loose";
-    allowedTCPPorts = [
-      8384 22000 # syncthing
-      22 # ssh via tailscale
-      6112 # wc3
-    ];
-    allowedUDPPorts = [
-      6112
-    ];
-  };
+  networking.firewall.enable = false;
 
   # Syncthing
   services.syncthing = {
@@ -42,71 +32,12 @@
     guiAddress = "http://127.0.0.1:8384";
     settings = {
       devices = {
-        "laptop"   = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
+        "laptop"   = { id = "5ATZ7LD-C3AYIMS-EXQZILG-2A743HY-4Y7ULQY-RODJR7F-GO43W6X-CLXDAAA"; };
       };
     };
   };
 
-  # networking
-  services.tailscale = {
-    enable = true;
-    openFirewall = true;
-    extraUpFlags = ["--login-server=https://hs.samlockart.com"];
-  };
-
-  programs.wireshark = {
-    enable = true;
-  };
-
-  services.avahi = {
-    enable = true;
-    reflector = true;
-    allowInterfaces = ["tailscale0" "enp4s0" ];
-    allowPointToPoint = true;
-  };
-
-
-  fileSystems."/mnt/share/sam" = {
-    device = "sauron:/srv/share/sam";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/share/public" = {
-    device = "sauron:/srv/share/public";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/downloads" = {
-    device = "sauron:/srv/media/downloads";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/tv" = {
-    device = "sauron:/srv/media/tv";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-
-  fileSystems."/mnt/media/movies" = {
-    device = "sauron:/srv/media/movies";
-    fsType = "nfs";
-    options = [ "x-systemd.automount" "noauto" ];
-  };
-  
-  # Enable the X11 windowing system.
-  services.xserver = {
-    enable = true;
-    xkb.layout = "us";
-    videoDrivers = ["nvidia"];
-    desktopManager = {
-      xterm.enable = false;
-      xfce.enable = true;
-    };
-  };
- # services.displayManager.defaultSession = "xfce";
+  programs.wireshark.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -134,8 +65,6 @@
     calibre
   ];
 
-
-
   # bluetooth
   services.blueman.enable = true;
   hardware.bluetooth.enable = true; # enables support for Bluetooth
@@ -146,26 +75,7 @@
     enable = true;
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
- #   localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
-  };
-
-  # open source NVIDIA game streaming service
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;
-    
-  };
-
-  # VR streaming
-  programs.alvr = {
-    enable = true;
-    openFirewall = true;
-  };
-
-  services.smartd = {
-    enable = true;
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];

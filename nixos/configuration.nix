@@ -15,7 +15,7 @@
     # inputs.hardware.nixosModules.common-ssd
 
     # You can also split up your configuration and import pieces of it here:
-    ./config/users.nix
+    ./config/common
     inputs.agenix.nixosModules.default
     inputs.pvpgnix.nixosModules.x86_64-linux.default
   ];
