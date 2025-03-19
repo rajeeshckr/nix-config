@@ -566,6 +566,8 @@
     overrideFolders = true;     # overrides any folders added or deleted through the WebUI
     guiAddress = "http://0.0.0.0:8384";
     settings = {
+      # TODO: use declarative node configuration
+      # https://wiki.nixos.org/wiki/Syncthing
       devices = {
         "laptop"   = { id = "5ATZ7LD-C3AYIMS-EXQZILG-2A743HY-4Y7ULQY-RODJR7F-GO43W6X-CLXDAAA"; };
         "desktop"   = { id = "F7G62MY-FWFWFNY-PYVBZQE-S4EXYDX-IIPF4AQ-YAKJVP3-4TZXCKT-NAUTJQU"; };
