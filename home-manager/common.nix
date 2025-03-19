@@ -163,6 +163,9 @@
     shellcheck
     jsonnet
     fzf
+    hyperfine
+    fd
+    bat
     unstable.go
     direnv
     nil # nix lsp
