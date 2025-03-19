@@ -715,6 +715,7 @@
   services.jackett = {
     enable = true;
     dataDir = "/srv/data/jackett";
+    package = pkgs.unstable.jackett;
     openFirewall = true;
   };
 
