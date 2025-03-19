@@ -170,6 +170,7 @@
     direnv
     nil # nix lsp
     rust-analyzer
+    uv
 
     # terminals
     kitty
@@ -181,7 +182,6 @@
     # graphical
     yubikey-manager
     p7zip-rar
-    vlc
 
     # CAD / 3d
     openscad
