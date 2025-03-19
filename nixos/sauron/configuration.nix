@@ -634,7 +634,7 @@
   ## alert on failure
   systemd.services = {
     "notify-problems@" = {
-      enable = true;
+      enable = false; # need to fix sendgrid shit
       serviceConfig.User = "root";
       environment.SERVICE = "%i";
       script = ''
