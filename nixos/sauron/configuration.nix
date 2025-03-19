@@ -197,6 +197,14 @@
         recommendedProxySettings = true;
       };
     };
+    virtualHosts."open-webui.middleearth.samlockart.com" = {
+      forceSSL = false;
+      enableACME = false;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString config.services.open-webui.port}";
+        recommendedProxySettings = true;
+      };
+    };
     virtualHosts.${toString config.services.grafana.settings.server.domain} = {
       forceSSL = false;
       enableACME = false;
@@ -553,6 +561,15 @@
       ROCKET_PORT = 8222;
       DOMAIN = "https://pass.iced.cool";
       SIGNUPS_ALLOWED = false; # sorry lads :^)
+    };
+  };
+
+  services.open-webui = {
+    enable = true;
+    openFirewall = true;
+    port = 11111;
+    environment = {
+      OLLAMA_API_BASE_URL = "http://desktop:11434";
     };
   };
 
