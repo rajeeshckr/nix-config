@@ -23,7 +23,19 @@
 
   networking.firewall.enable = false;
 
-  services.syncthing.settings.devices."laptop" = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
+  # Syncthing
+  services.syncthing = {
+    enable = true;
+    user = "sam";
+    dataDir = "/home/sam/vault";    # Default folder for new synced folders
+    configDir = "/home/sam/.config/syncthing";   # Folder for Syncthing's settings and keys
+    guiAddress = "http://127.0.0.1:8384";
+    settings = {
+      devices = {
+        "laptop"   = { id = "S5V7OMM-KMCFGTF-DI2X72J-QNY565R-XBWZERU-MH6LCDV-QLTSNYJ-FKJ47A2"; };
+      };
+    };
+  };
 
   programs.wireshark.enable = true;
 
