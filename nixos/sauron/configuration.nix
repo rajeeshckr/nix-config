@@ -155,6 +155,9 @@
 
     # This might create errors
     proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
+
+    # Default is far too small
+    client_max_body_size 500M;
     '';
 
     virtualHosts."tv.samlockart.com" = {
@@ -200,6 +203,7 @@
     };
     virtualHosts."open-webui.middleearth.samlockart.com" = {
       forceSSL = false;
+      addSSL = true;
       enableACME = false;
       locations."/" = {
         proxyPass = "http://127.0.0.1:${toString config.services.open-webui.port}";
