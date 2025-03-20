@@ -11,7 +11,7 @@
       ../config/common
       ../config/network
       ../config/nvidia.nix
-      ../config/home-manager.nix
+#      ../config/home-manager.nix # get working
     ];
 
   # Use the systemd-boot EFI boot loader.
