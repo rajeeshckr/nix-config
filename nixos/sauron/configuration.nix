@@ -155,9 +155,6 @@
 
     # This might create errors
     proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
-
-    # Default is far too small
-    client_max_body_size 500M;
     '';
 
     virtualHosts."tv.samlockart.com" = {
