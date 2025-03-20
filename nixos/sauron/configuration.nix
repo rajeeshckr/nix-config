@@ -192,15 +192,6 @@
         return = 404;
       };
     };
-    virtualHosts."sauron.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.ollama.port}";
-        proxyWebsockets = true;
-        recommendedProxySettings = true;
-      };
-    };
     virtualHosts."open-webui.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;
