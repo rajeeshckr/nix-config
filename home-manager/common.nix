@@ -161,7 +161,7 @@
     podman
     qemu
     shellcheck
-    jsonnet
+    go-jsonnet # preferred over jsonnet
     fzf
     hyperfine
     fd
