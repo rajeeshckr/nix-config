@@ -203,7 +203,6 @@
     };
     virtualHosts."open-webui.middleearth.samlockart.com" = {
       forceSSL = false;
-      addSSL = true;
       enableACME = false;
       locations."/" = {
         proxyPass = "http://127.0.0.1:${toString config.services.open-webui.port}";
