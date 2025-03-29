@@ -47,7 +47,6 @@
       8081 8444 # unifi
       22 # ssh via tailscale
       27015 # steam
-      23916 # maubot
       51413 # torrent
       8191 # flaresolverr
     ];
