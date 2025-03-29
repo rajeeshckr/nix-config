@@ -762,6 +762,11 @@
         owner = "transmission";
         group = "transmission";
       };
+      maubot-secret-config = {
+        file = ../../secrets/maubot-secret-config.age;
+        owner = "maubot";
+        group = "maubot";
+      };
     };
   };
 
