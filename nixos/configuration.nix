@@ -44,6 +44,7 @@
       # Disable if you don't want unfree packages
       allowUnfree = true;
       permittedInsecurePackages = [
+        "olm-3.2.16"
         "dotnet-sdk-6.0.428"
         "aspnetcore-runtime-6.0.36"
       ];
