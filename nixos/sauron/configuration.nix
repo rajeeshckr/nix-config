@@ -338,7 +338,7 @@
     };
   };
 
-  maubot = {
+  services.maubot = {
     enable = true;
     dataDir = "/srv/data/maubot";
   };
