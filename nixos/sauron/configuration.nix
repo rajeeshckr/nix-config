@@ -11,6 +11,7 @@
       ../config/common
       ../config/network
       ../config/nvidia.nix
+      ./maubot.nix
 #      ../config/home-manager.nix # get working
     ];
 
@@ -338,17 +339,7 @@
     };
   };
 
-  services.maubot = {
-    enable = true;
-    dataDir = "/srv/data/maubot";
-    extraConfigFile = config.age.secrets.maubot-secret-config.path;
-    settings = {
-      database = "sqlite:/srv/data/maubot/maubot.db";
-    };
-    plugins = with config.services.maubot.package.plugins; [
-      chatgpt
-    ];
-  };
+
 
   # selfhosted rarbg
   # https://github.com/mgdigital/rarbg-selfhosted
@@ -761,11 +752,6 @@
         file = ../../secrets/transmission-credentials.age;
         owner = "transmission";
         group = "transmission";
-      };
-      maubot-secret-config = {
-        file = ../../secrets/maubot-secret-config.age;
-        owner = "maubot";
-        group = "maubot";
       };
     };
   };
