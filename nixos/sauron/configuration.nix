@@ -341,6 +341,13 @@
   services.maubot = {
     enable = true;
     dataDir = "/srv/data/maubot";
+    extraConfig = config.age.secrets.maubot-secret-config.path;
+    settings = {
+      database = "sqlite:/srv/data/maubot/maubot.db";
+    };
+    plugins = with config.services.maubot.package.plugins; [
+      xyz.maubot.chatgpt
+    ];
   };
 
   # selfhosted rarbg
