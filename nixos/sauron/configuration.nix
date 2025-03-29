@@ -346,7 +346,7 @@
       database = "sqlite:/srv/data/maubot/maubot.db";
     };
     plugins = with config.services.maubot.package.plugins; [
-      xyz.maubot.chatgpt
+      chatgpt
     ];
   };
 
