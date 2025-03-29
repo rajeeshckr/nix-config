@@ -341,7 +341,7 @@
   services.maubot = {
     enable = true;
     dataDir = "/srv/data/maubot";
-    extraConfig = config.age.secrets.maubot-secret-config.path;
+    extraConfigFile = config.age.secrets.maubot-secret-config.path;
     settings = {
       database = "sqlite:/srv/data/maubot/maubot.db";
     };
