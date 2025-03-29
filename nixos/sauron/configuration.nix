@@ -338,6 +338,11 @@
     };
   };
 
+  maubot = {
+    enable = true;
+    dataDir = "/srv/data/maubot";
+  };
+
   # selfhosted rarbg
   # https://github.com/mgdigital/rarbg-selfhosted
   virtualisation.oci-containers.containers = {
@@ -345,13 +350,6 @@
       image = "ghcr.io/mgdigital/rarbg-selfhosted:latest";
       ports = ["3333:3333"];
       volumes = ["/srv/data/rarbg_db.sqlite:/rarbg_db.sqlite"];
-    };
-
-    maubot = {
-      image = "dock.mau.dev/maubot/maubot";
-      ports = ["29316:29316"];
-      volumes = ["/srv/data/maubot:/data:z"];
-      extraOptions = ["--network=host"];
     };
 
     flaresolverr = {
