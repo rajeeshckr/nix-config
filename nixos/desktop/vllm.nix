@@ -27,7 +27,6 @@ in {
       cmd = [
         "--model" cfg.model
         "--max-model-len" "4096"
-        "--max-num-seqs" "10"
         "--gpu-memory-utilization=0.85"
         "--dtype=float16"
       ];
