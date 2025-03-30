@@ -12,6 +12,17 @@ in {
       };
     };
   };
+  services.nginx = let
+    inherit (config.services.maubot) settings;
+  in {
+    virtualHosts."maubot.middleearth.samlockart.com" = {
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:${toString settings.server.port}";
+        proxyWebsockets = true;
+      };
+    };
+  };
+
   services.maubot = {
     enable = true;
     dataDir = "/srv/data/maubot";
