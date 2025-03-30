@@ -8,7 +8,7 @@ in {
   virtualisation.oci-containers.containers = {
     vllm = {
       preRunExtraOptions = [
-        "--storage-driver=overlayfs" # not sure why, but this gets blanked out
+        "--storage-driver=overlay" # not sure why, but this gets blanked out
       ];
       extraOptions = [
         "--ipc=host"
