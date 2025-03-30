@@ -13,7 +13,7 @@ in {
       forceSSL = true;
       enableACME = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString settings.ROCKET_PORT}";
+        proxyPass = "http://127.0.0.1:${toString config.ROCKET_PORT}";
         recommendedProxySettings = true;
       };
     };
