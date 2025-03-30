@@ -4,7 +4,7 @@
 , ... }:
 let 
   cfg = {
-    model = "Qwen/Qwen2.5-7B-Instruct";
+    model = "Qwen/Qwen2.5-Omni-7B";
     image = "vllm/vllm-openai:latest";
     port = 8000;
   };
