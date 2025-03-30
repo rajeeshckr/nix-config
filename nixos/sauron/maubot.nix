@@ -22,6 +22,10 @@ in {
       };
     };
   };
+  # provide mbc cli
+  environment.systemPackages = with pkgs; [
+    config.services.maubot.package
+  ];
 
   services.maubot = {
     enable = true;
