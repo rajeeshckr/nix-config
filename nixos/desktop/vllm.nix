@@ -4,7 +4,7 @@
 , ... }:
 let 
   cfg = {
-    model = "Qwen/Qwen2.5-Omni-7B";
+    model = "google/gemma-3-12b-pt";
     image = "vllm/vllm-openai:latest";
     port = 8000;
   };
@@ -23,7 +23,9 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--dtype=float16" # required for  NVIDIA GeForce RTX 2080 Ti
+        "--max-model-len" "8192"
+        "--max-num-seqs" "10"
+        "--gpu-memory-utilization=0.99"
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
