@@ -6,14 +6,14 @@ let
   domain = "pass.iced.cool";
 in {
   services.nginx = let
-    inherit (config.services.vaultwarden) settings;
+    inherit (config.services.vaultwarden) config;
   in {
     virtualHosts.domain = {
       # https://github.com/dani-garcia/vaultwarden/wiki/Deployment-examples#nixos-by-tklitschi
       forceSSL = true;
       enableACME = true;
       locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString settings.config.ROCKET_PORT}";
+        proxyPass = "http://127.0.0.1:${toString settings.ROCKET_PORT}";
         recommendedProxySettings = true;
       };
     };
