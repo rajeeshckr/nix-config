@@ -40,4 +40,25 @@ in {
 	mode = "0644";
     };
   };
+
+  ## alert on failure
+  systemd.services = {
+    "notify-problems@" = {
+      enable = false; # need to fix sendgrid shit
+      serviceConfig.User = "root";
+      environment.SERVICE = "%i";
+      script = ''
+        printf "Content-Type: text/plain\r\nSubject: $SERVICE FAILED\r\n\r\n$(systemctl status $SERVICE)" | /run/wrappers/bin/sendmail root
+      '';
+    };
+  };
+  systemd.packages = [
+    (pkgs.runCommandNoCC "notify.conf" {
+      preferLocalBuild = true;
+      allowSubstitutes = false;
+    } ''
+      mkdir -p $out/etc/systemd/system/service.d/
+      echo -e "[Unit]\nOnFailure=notify-problems@%i.service\nStartLimitIntervalSec=1d\nStartLimitBurst=5\n" > $out/etc/systemd/system/service.d/notify.conf
+      '')
+  ];
 }

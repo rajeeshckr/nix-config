@@ -244,21 +244,6 @@
     docker # todo - replace with podman
   ];
 
-  services.pvpgn = {
-    enable = true;
-    bnetd = {
-      servername = "WankNet";
-      logFile = "/var/log/bnetd.log";
-    };
-    localStateDir = "/srv/data/pvpgn";
-    openFirewall = true;
-    news = ''
-      {2024-10-16}
-
-      Welcome to the jungle.
-    '';
-  };
-
   # enable docker support
   virtualisation.docker = {
     enable = true;
@@ -280,18 +265,6 @@
     flaresolverr = {
       image = "ghcr.io/flaresolverr/flaresolverr:latest";
       ports = ["8191:8191"];
-    };
-
-    unifi = {
-      image = "jacobalberty/unifi";
-      ports = ["8081:8081" "8444:8444" "3478:3478/udp"];
-      user = "unifi:unifi";
-      volumes = ["/srv/data/unifi:/unifi"];
-      environment = {
-        TZ = "Australia/Melbourne";
-        UNIFI_HTTP_PORT = "8081";
-        UNIFI_HTTPS_PORT = "8444";
-      };
     };
   };
 
@@ -356,27 +329,6 @@
       };
     };
   };
-
-  ## alert on failure
-  systemd.services = {
-    "notify-problems@" = {
-      enable = false; # need to fix sendgrid shit
-      serviceConfig.User = "root";
-      environment.SERVICE = "%i";
-      script = ''
-        printf "Content-Type: text/plain\r\nSubject: $SERVICE FAILED\r\n\r\n$(systemctl status $SERVICE)" | /run/wrappers/bin/sendmail root
-      '';
-    };
-  };
-  systemd.packages = [
-    (pkgs.runCommandNoCC "notify.conf" {
-      preferLocalBuild = true;
-      allowSubstitutes = false;
-    } ''
-      mkdir -p $out/etc/systemd/system/service.d/
-      echo -e "[Unit]\nOnFailure=notify-problems@%i.service\nStartLimitIntervalSec=1d\nStartLimitBurst=5\n" > $out/etc/systemd/system/service.d/notify.conf
-      '')
-  ];
 
   services.jellyfin = {
     package = pkgs.unstable.jellyfin;
