@@ -71,29 +71,6 @@
     enable = true;
   };
 
-  # https://nixos.org/manual/nixos/stable/#module-services-prometheus-exporters
-  services.prometheus.exporters.node = {
-    enable = false;
-    port = 9000;
-    # https://github.com/NixOS/nixpkgs/blob/nixos-24.05/nixos/modules/services/monitoring/prometheus/exporters.nix
-    enabledCollectors = [ "systemd" ];
-    # /nix/store/zgsw0yx18v10xa58psanfabmg95nl2bb-node_exporter-1.8.1/bin/node_exporter  --help
-    extraFlags = [ "--collector.ethtool" "--collector.softirqs" "--collector.tcpstat" "--collector.wifi" ];
-  };
-
-  services.prometheus = {
-    enable = false;
-    globalConfig.scrape_interval = "10s"; # "1m"
-    scrapeConfigs = [
-    {
-      job_name = "node";
-      static_configs = [{
-        targets = [ "localhost:${toString config.services.prometheus.exporters.node.port}" ];
-      }];
-    }
-    ];
-  }; 
-
   services.nginx = {
     enable = true;
 
@@ -197,19 +174,9 @@
         recommendedProxySettings = true;
       };
     };
-    virtualHosts.${toString config.services.grafana.settings.server.domain} = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "${toString config.services.grafana.settings.server.protocol}://${toString config.services.grafana.settings.server.http_addr}:${toString config.services.grafana.settings.server.http_port}";
-        recommendedProxySettings = true;
-        proxyWebsockets = true;
-      };
-    };
     tailscaleAuth = {
       enable = true;
       virtualHosts = [
-        config.services.grafana.settings.server.domain
         "jackett.middleearth.samlockart.com"
       ];
     };
@@ -505,22 +472,6 @@
         "force user" = "nobody";
         "force group" = "nogroup";
       };
-    };
-  };
-
-  # monitoring
-  # grafana configuration
-  services.grafana = {
-    enable = false;
-    settings = {
-        server = {
-          domain = "grafana.middleearth.samlockart.com";
-          root_url = "http://${toString config.services.grafana.settings.server.domain}/";
-          protocol = "https";
-          http_port = 3000;
-          http_addr = "127.0.0.1";
-          serve_from_sub_path = false;
-        };
     };
   };
 
