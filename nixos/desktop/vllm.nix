@@ -23,9 +23,6 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--enable-auto-tool-choice"
-        "--limit_mm_per_prompt" "image=10"
-        "--tensor-parallel-size" "2"
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
