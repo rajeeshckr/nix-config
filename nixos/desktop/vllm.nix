@@ -4,7 +4,7 @@
 , ... }:
 let 
   cfg = {
-    model = "mistralai/Mistral-Small-3.1-24B-Instruct-2503";
+    model = "Qwen/Qwen2.5-7B-Instruct";
     image = "vllm/vllm-openai:latest";
     port = 8000;
   };
@@ -23,10 +23,6 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--tokenizer_mode" "mistral"
-        "--config_format" "mistral"
-        "--load_format" "mistral"
-        "--tool-call-parser" "mistral"
         "--enable-auto-tool-choice"
         "--limit_mm_per_prompt" "image=10"
         "--tensor-parallel-size" "2"
