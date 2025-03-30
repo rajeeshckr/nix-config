@@ -12,6 +12,7 @@
       ../config/network
       ../config/nvidia.nix
       ./maubot.nix
+      ./mumble.nix
 #      ../config/home-manager.nix # get working
     ];
 
@@ -42,7 +43,6 @@
       8384 22000 # syncthing
       5357 # wsdd - samba
       445 # samba
-      config.services.murmur.port # murmur
       80 443 8080 8443 # nginx
       8081 8444 # unifi
       22 # ssh via tailscale
@@ -53,7 +53,6 @@
     allowedUDPPorts = [
       111 2049 4000 4001 4002 20048 # nfs
       22000 21027 # syncthing
-      config.services.murmur.port # murmur
       3702 # wsdd - samba
       config.services.tailscale.port
       27015 # steam
@@ -288,7 +287,6 @@
     };
     nginx = {
       isSystemUser = true;
-      extraGroups = ["murmur"];
     };
     unifi = {
       isSystemUser = true;
@@ -751,42 +749,6 @@
         file = ../../secrets/transmission-credentials.age;
         owner = "transmission";
         group = "transmission";
-      };
-    };
-  };
-
-
-  services.murmur = {
-     enable = true;
-     registerName = "wankbank";
-     registerHostname = "murmur.samlockart.com";
-     registerUrl = "murmur.samlockart.com";
-     welcometext = "speak friend and enter...";
-     bandwidth = 130000;
-     allowHtml = false;
-     autobanTime = 10;
-     autobanAttempts = 60;
-     sslKey = "${config.security.acme.certs."murmur.samlockart.com".directory}/key.pem";
-     sslCert = "${config.security.acme.certs."murmur.samlockart.com".directory}/fullchain.pem";
-   };
-
-  security.acme.certs."murmur.samlockart.com" = {
-    group = "murmur";
-    postRun = "systemctl reload-or-restart murmur.service";
-  };
-
-  services.nginx.virtualHosts."murmur.samlockart.com".enableACME = true;
-
-  services.botamusique = {
-    enable = true;
-    settings = {
-      server = {
-        host = config.services.murmur.registerHostname;
-        port = config.services.murmur.port;
-      };
-      bot = {
-        username = "cuckbot";
-        comment = "Hi, I'm here to play music and have fun. Please treat me kindly.";
       };
     };
   };
