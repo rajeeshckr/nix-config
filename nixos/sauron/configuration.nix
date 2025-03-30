@@ -13,6 +13,7 @@
       ../config/nvidia.nix
       ./maubot.nix
       ./mumble.nix
+      ./borg.nix
 #      ../config/home-manager.nix # get working
     ];
 
@@ -301,7 +302,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    borgbackup
     ipmiutil
     ipmitool
     steamcmd
@@ -395,9 +395,9 @@
   };
   environment.etc = {
     "aliases" = {
-	text = ''
+      text = ''
 	root: sam@samlockart.com
-	'';
+      '';
 	mode = "0644";
     };
   };
@@ -583,58 +583,6 @@
     };
   };
 
-  ## backup
-  services.borgbackup.jobs = {
-    mordor-vault = {
-      paths = "/srv/vault";
-      repo = "20972@hk-s020.rsync.net:mordor/vault";
-      doInit = true;
-      encryption = {
-        mode = "repokey-blake2";
-        passCommand = "cat ${config.age.secrets.borg.path}";
-      };
-      environment.BORG_RSH = "ssh -i /srv/vault/ssh_keys/id_rsa";
-      compression = "auto,zstd";
-      startAt = "daily";
-    };
-   mordor-srv-data = {
-      paths = "/srv/data";
-      repo = "20972@hk-s020.rsync.net:mordor/srv/data";
-      doInit = true;
-      encryption = {
-        mode = "repokey-blake2";
-        passCommand = "cat ${config.age.secrets.borg.path}";
-      };
-      environment.BORG_RSH = "ssh -i /srv/vault/ssh_keys/id_rsa";
-      compression = "auto,zstd";
-      startAt = "daily";
-    };
-   mordor-share-sam = {
-      paths = "/srv/share/sam";
-      repo = "20972@hk-s020.rsync.net:mordor/share/sam";
-      doInit = true;
-      encryption = {
-        mode = "repokey-blake2";
-        passCommand = "cat ${config.age.secrets.borg.path}";
-      };
-      environment.BORG_RSH = "ssh -i /srv/vault/ssh_keys/id_rsa";
-      compression = "auto,zstd";
-      startAt = "daily";
-    };
-   mordor-share-emma = {
-      paths = "/srv/share/emma";
-      repo = "20972@hk-s020.rsync.net:mordor/share/emma";
-      doInit = true;
-      encryption = {
-        mode = "repokey-blake2";
-        passCommand = "cat ${config.age.secrets.borg.path}";
-      };
-      environment.BORG_RSH = "ssh -i /srv/vault/ssh_keys/id_rsa";
-      compression = "auto,zstd";
-      startAt = "daily";
-    };
-  };
-
   ## alert on failure
   systemd.services = {
     "notify-problems@" = {
@@ -736,9 +684,6 @@
   age = {
     identityPaths = ["/srv/vault/ssh_keys/id_rsa"]; # requires `/srv/vault` to be mounted before agenix can be used
     secrets = {
-      borg = {
-        file = ../../secrets/borg.age;
-      };
       tailscale-server = {
         file = ../../secrets/tailscale-server.age;
       };
