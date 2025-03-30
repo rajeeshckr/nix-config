@@ -27,7 +27,7 @@ in {
         "--limit_mm_per_prompt"
         "image=10"
         "--tensor-parallel-size" "2"
-
+      ];
       image = "vllm/vllm-openai:latest";
       ports = ["8000:8000"];
     };
