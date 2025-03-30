@@ -7,10 +7,6 @@ in {
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.oci-containers.containers = {
     vllm = {
-      preRunExtraOptions = [
-        "--runtime"
-        "nvidia"
-      ];
       extraOptions = [
         "--ipc=host"
         "--device" "nvidia.com/gpu=all"
