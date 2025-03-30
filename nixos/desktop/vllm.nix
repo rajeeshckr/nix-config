@@ -7,6 +7,9 @@ in {
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.oci-containers.containers = {
     vllm = {
+      preRunExtraOptions = [
+        "--storage-driver=overlayfs" # not sure why, but this gets blanked out
+      ];
       extraOptions = [
         "--ipc=host"
         "--device=nvidia.com/gpu=all"
