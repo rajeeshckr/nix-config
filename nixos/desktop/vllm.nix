@@ -3,6 +3,11 @@
 , pkgs
 , ... }:
 let 
+  cfg = {
+    model = "mistralai/Mistral-Small-3.1-24B-Instruct-2503";
+    image = "vllm/vllm-openai:latest";
+    port = 8000;
+  };
 in {
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.oci-containers.containers = {
@@ -15,7 +20,7 @@ in {
         "--device=nvidia.com/gpu=all"
       ];
       cmd = [
-        "--model" "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
+        "--model" cfg.model
         "--tokenizer_mode" "mistral"
         "--config_format" "mistral"
         "--load_format" "mistral"
@@ -24,8 +29,8 @@ in {
         "--limit_mm_per_prompt"
         "--tensor-parallel-size" "2"
       ];
-      image = "vllm/vllm-openai:latest";
-      ports = ["8000:8000"];
+      image = cfg.image;
+      ports = ["${toString cfg.port}:8000"];
     };
   };
 }
