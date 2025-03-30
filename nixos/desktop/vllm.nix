@@ -16,7 +16,7 @@ in {
       preRunExtraOptions = [
         "--storage-driver=overlay" # not sure why, but this gets blanked out
       ];
-      environmentFiles = [age.secrets.hugging-face-ro-token.path];
+      environmentFiles = [config.age.secrets.hugging-face-ro-token.path];
       extraOptions = [
         "--ipc=host"
         "--device=nvidia.com/gpu=all"
