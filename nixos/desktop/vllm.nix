@@ -26,7 +26,7 @@ in {
         "--load_format" "mistral"
         "--tool-call-parser" "mistral"
         "--enable-auto-tool-choice"
-        "--limit_mm_per_prompt"
+        "--limit_mm_per_prompt" "image=10"
         "--tensor-parallel-size" "2"
       ];
       image = cfg.image;
