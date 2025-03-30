@@ -9,4 +9,5 @@ in
   "tailscale-server.age".publicKeys = users;
   "transmission-credentials.age".publicKeys = users;
   "borg.age".publicKeys = users;
+  "maubot-secret-config.age".publicKeys = users;
 }
