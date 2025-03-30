@@ -23,6 +23,11 @@
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   networking.firewall.enable = false;
+  # secrets
+  age = {
+    # TODO: will cause issues as syncthing needs to sync this before we can decrypt
+    identityPaths = ["/home/sam/vault/ssh_keys/id_rsa"];
+  };
 
   # Syncthing
   services.syncthing = {
