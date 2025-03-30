@@ -5,17 +5,13 @@ let
   cfg = config.server;
   domain = "pass.iced.cool";
 in {
-  services.nginx = let
-    inherit (config.services.vaultwarden) config;
-  in {
-    virtualHosts.domain = {
-      # https://github.com/dani-garcia/vaultwarden/wiki/Deployment-examples#nixos-by-tklitschi
-      forceSSL = true;
-      enableACME = true;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.ROCKET_PORT}";
-        recommendedProxySettings = true;
-      };
+  services.nginx.virtualHosts.${domain} = {
+    # https://github.com/dani-garcia/vaultwarden/wiki/Deployment-examples#nixos-by-tklitschi
+    forceSSL = true;
+    enableACME = true;
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${toString services.vaultwarden.config.ROCKET_PORT}";
+      recommendedProxySettings = true;
     };
   };
 
