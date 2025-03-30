@@ -17,7 +17,7 @@ in {
       "${toString ports.https}:${toString ports.https}"
       "${toString ports.udp}:${toString ports.udp}/udp"
     ];
-    user = "unifi:unifi";
+    user = "${toString config.users.users.unifi.id}:${toString config.users.groups.unifi.id}";
     volumes = ["/srv/data/unifi:/unifi"];
     environment = {
       TZ = "Australia/Melbourne";
