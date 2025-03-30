@@ -4,7 +4,7 @@
 , ... }:
 let cfg = config.server;
 in {
-  age.transmission-credentials = {
+  age.secrets.transmission-credentials = {
     file = ../../secrets/transmission-credentials.age;
     owner = "transmission";
     group = "transmission";
