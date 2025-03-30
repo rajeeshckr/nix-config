@@ -23,7 +23,7 @@ in {
     };
   };
   # provide mbc cli
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     config.services.maubot.package
   ];
 
