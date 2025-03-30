@@ -16,7 +16,7 @@
       ./borg.nix
       ./vaultwarden.nix
       ./transmission.nix
-      ./samba.nix
+      ./nas.nix
       ./unifi.nix
       ./mail.nix
       ./pvpgn.nix
@@ -45,15 +45,12 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      2049 # nfsv4
-      111 2049 4000 4001 4002 20048 # nfs
       8384 22000 # syncthing
       22 # ssh via tailscale
       27015 # steam
       8191 # flaresolverr
     ];
     allowedUDPPorts = [
-      111 2049 4000 4001 4002 20048 # nfs
       22000 21027 # syncthing
       config.services.tailscale.port
       27015 # steam
@@ -122,31 +119,11 @@
     };
   };
 
-  # Enable the OpenSSH daemon.
   services.openssh = {
     # support yubikey
     # https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html
     extraConfig = ''
     PubkeyAuthOptions verify-required
-    Match Group sftponly
-      ChrootDirectory /srv/share/public
-      ForceCommand internal-sftp
-      AllowTcpForwarding no
-  '';
-  };
-
-  # NFS
-  services.nfs.server = {
-    enable = true;
-    # fixed rpc.statd port; for firewall
-    lockdPort = 4001;
-    mountdPort = 4002;
-    statdPort = 4000;
-    exports = ''
-      /srv/share/sam          192.168.0.0/255.255.255.0(rw,fsid=0,no_subtree_check) 100.64.0.0/255.255.255.0(rw,fsid=0,no_subtree_check)
-      /srv/share/emma         192.168.0.0/255.255.255.0(rw,fsid=0,no_subtree_check) 100.64.0.0/255.255.255.0(rw,fsid=0,no_subtree_check)
-      /srv/share/public       192.168.0.0/255.255.255.0(rw,nohide,insecure,no_subtree_check) 100.64.0.0/255.255.255.0(rw,nohide,insecure,no_subtree_check)
-      /srv/media              192.168.0.0/255.255.255.0(ro,nohide,insecure,no_subtree_check) 100.64.0.0/255.255.255.0(rw,nohide,insecure,no_subtree_check)
   '';
   };
 
