@@ -9,7 +9,7 @@ in {
     vllm = {
       extraOptions = [
         "--ipc=host"
-        "--device" "nvidia.com/gpu=all"
+        "--device=nvidia.com/gpu=all"
       ];
       cmd = [
         "--model" "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
