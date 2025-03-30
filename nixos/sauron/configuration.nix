@@ -15,6 +15,7 @@
       ./mumble.nix
       ./borg.nix
       ./vaultwarden.nix
+      ./transmission.nix
 #      ../config/home-manager.nix # get working
     ];
 
@@ -41,7 +42,6 @@
     allowedTCPPorts = [
       2049 # nfsv4
       111 2049 4000 4001 4002 20048 # nfs
-      9091 # transmission RPC
       8384 22000 # syncthing
       5357 # wsdd - samba
       445 # samba
@@ -208,38 +208,16 @@
         proxyPass = "http://127.0.0.1:8384";
       };
     };
-    virtualHosts."transmission.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:9091";
-      };
-    };
   };
   # accept the EULA
   security.acme.defaults.email = "sam@samlockart.com";
   security.acme.acceptTerms = true;
   
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   users.groups.emma = {};
   users.users = {
     emma = {
       isSystemUser = true;
       group = "emma";
-    };
-    # sftp
-    chowder = {
-      isNormalUser = true;
-      shell = "/usr/bin/nologin";
-      group = "sftponly";
-      openssh.authorizedKeys.keys = [
-        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXa9yFKcUaD631H81iDvGao7anXq0/cOFIJ3zI0I39+Evgzt2rsaJbp6kgCthgwg/pTVIXsh5WGERL33/HsygbtR0Jy3JlXUsb8lwS83T5L3scL1Z6KfkoABGMwbCA9yyBZWiRtZU6zYAtXCwIytBzkTgvCic5yaN94io75e+Sj0nKxPlHP50f8yZTcHLUCexTg7aBDptqEzo8rPeKg0YSjlSlyPs5CR8OGluQlJsNIw2dzIGzeT4aTXMTO55YhGGHweD29gT1r3pp4nhRYdTUuU5R1gYevCD/Ok1W58aL6spS8z2fAMm6YMPeme8dRUEZ018Qow3lDHbQ3CaZfZYFuxRXTYLIWG6eHJyS/1H95nF9YfF+f9iA+jyvcXGEooPm8SPXM84eOMSZrzCbtQHYvslLqws/CYX/gxoIASWeGbJvqwM3esSj5m9X/qy6dsGJjDCXZKr8bcqoN33yW6YTi7hzoUSfgcOMjlv9peEiEiMciaFn2XE1GtcHi4G1hPk="
-      ];
-      
     };
     # services
     syncthing = {
@@ -538,45 +516,6 @@
       '')
   ];
 
-
-  services.transmission = {
-    enable = true;
-    credentialsFile = config.age.secrets.transmission-credentials.path;
-    settings = {
-      home = "/srv/data/transmission";
-      download-dir = "/srv/media/downloads";
-      incomplete-dir = "/srv/media/downloads/.incomplete";
-      trash-original-torrent-files = true;
-      rpc-bind-address = "0.0.0.0";
-      rpc-port = 9091;
-      rpc-whitelist = "127.0.0.1,192.168.0.*,100.64.0.*";
-      rpc-host-whitelist-enabled = false;
-      rpc-authentication-required = false;
-      ratio-limit = "0.0";
-      ratio-limit-enabled = true;
-    };
-  };
-
-  systemd.timers."transmission-restart" = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnBootSec = "1h";
-      OnUnitActiveSec = "1h";
-      Unit = "transmission-restart.service";
-    };
-  };
-
-  systemd.services."transmission-restart" = {
-    script = ''
-      set -eu
-      ${pkgs.systemd}/bin/systemctl restart transmission.service
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
-    };
-  };
-
   services.jellyfin = {
     package = pkgs.unstable.jellyfin;
     enable = true;
@@ -623,11 +562,6 @@
       };
       tailscale-authkey = {
         file = ../../secrets/tailscale-authkey.age;
-      };
-      transmission-credentials = {
-        file = ../../secrets/transmission-credentials.age;
-        owner = "transmission";
-        group = "transmission";
       };
     };
   };
