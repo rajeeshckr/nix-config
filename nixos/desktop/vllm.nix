@@ -23,6 +23,7 @@ in {
       ];
       cmd = [
         "--model" cfg.model
+        "--dtype=float16" # required for  NVIDIA GeForce RTX 2080 Ti
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
