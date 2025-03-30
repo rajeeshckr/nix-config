@@ -37,6 +37,7 @@
     };
   };
 
+  hardware.nvidia-container-toolkit.enable = true;
   programs.wireshark.enable = true;
 
   # List packages installed in system profile. To search, run:
