@@ -14,6 +14,7 @@
       ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix
+      ./vllm.nix
     ];
 
   networking.hostName = "desktop"; # Define your hostname.
@@ -37,7 +38,6 @@
     };
   };
 
-  hardware.nvidia-container-toolkit.enable = true;
   programs.wireshark.enable = true;
 
   # List packages installed in system profile. To search, run:
