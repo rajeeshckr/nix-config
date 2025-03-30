@@ -16,6 +16,7 @@
       ./borg.nix
       ./vaultwarden.nix
       ./transmission.nix
+      ./samba.nix
 #      ../config/home-manager.nix # get working
     ];
 
@@ -43,8 +44,6 @@
       2049 # nfsv4
       111 2049 4000 4001 4002 20048 # nfs
       8384 22000 # syncthing
-      5357 # wsdd - samba
-      445 # samba
       80 443 8080 8443 # nginx
       8081 8444 # unifi
       22 # ssh via tailscale
@@ -55,7 +54,6 @@
     allowedUDPPorts = [
       111 2049 4000 4001 4002 20048 # nfs
       22000 21027 # syncthing
-      3702 # wsdd - samba
       config.services.tailscale.port
       27015 # steam
       51413 # torrent
@@ -358,92 +356,6 @@
       ForceCommand internal-sftp
       AllowTcpForwarding no
   '';
-  };
-
-  # Samba
-  services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
-  # networking.firewall.allowedTCPPorts = [
-  #   5357 # wsdd
-  # ];
-  # networking.firewall.allowedUDPPorts = [
-  #   3702 # wsdd
-  # ];
-  services.samba = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      global = {
-        workgroup = "WORKGROUP";
-        "server string" = "sauron";
-        "netbios name" = "sauron";
-        security = "user";
-        "hosts allow" = "100.64. 192.168.0. 127.0.0.1 localhost ::1";
-        "hosts deny" = "0.0.0.0/0";
-        "guest account" = "nobody";
-        "map to guest" = "bad user";
-      };
-      public = {
-        path = "/srv/share/public";
-        browseable = "yes";
-        writable = "yes";
-        "read only" = "no";
-        "guest ok" = "yes";
-        "create mask" = "0664";
-        "directory mask" = "2777";
-        "force user" = "nobody";
-        "force group" = "nogroup";
-      };
-      sam = {
-        path = "/srv/share/sam";
-        browseable = "no";
-        "read only" = "no";
-        "guest ok" = "no";
-        "create mask" = "0600";
-        "directory mask" = "0700";
-        "force user" = "sam";
-        "force group" = "root";
-      };
-      emma = {
-        path = "/srv/share/emma";
-        browseable = "no";
-        "read only" = "no";
-        "guest ok" = "no";
-        "create mask" = "0600";
-        "directory mask" = "0700";
-        "force user" = "emma";
-        "force group" = "root";
-      };
-      tv = {
-        path = "/srv/media/tv";
-        browseable = "yes";
-        "read only" = "yes";
-        "guest ok" = "yes";
-        "create mask" = "0600";
-        "directory mask" = "0700";
-        "force user" = "nobody";
-        "force group" = "nogroup";
-      };
-      movies = {
-        path = "/srv/media/movies";
-        browseable = "yes";
-        "read only" = "yes";
-        "guest ok" = "yes";
-        "create mask" = "0600";
-        "directory mask" = "0700";
-        "force user" = "nobody";
-        "force group" = "nogroup";
-      };
-      downloads = {
-        path = "/srv/media/downloads";
-        browseable = "yes";
-        "read only" = "no";
-        "guest ok" = "yes";
-        "create mask" = "0644";
-        "directory mask" = "0755";
-        "force user" = "nobody";
-        "force group" = "nogroup";
-      };
-    };
   };
 
   # NFS
