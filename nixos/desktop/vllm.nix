@@ -26,6 +26,7 @@ in {
         "--max-model-len" "8192"
         "--max-num-seqs" "10"
         "--gpu-memory-utilization=0.99"
+        "--dtype=float16"
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
