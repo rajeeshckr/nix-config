@@ -17,15 +17,18 @@ in {
         "--storage-driver=overlay" # not sure why, but this gets blanked out
       ];
       environmentFiles = [config.age.secrets.hugging-face-ro-token.path];
+      environment = {
+        PYTORCH_CUDA_ALLOC_CONF = "expandable_segments:True";
+      };
       extraOptions = [
         "--ipc=host"
         "--device=nvidia.com/gpu=all"
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "8192"
+        "--max-model-len" "4096"
         "--max-num-seqs" "10"
-        "--gpu-memory-utilization=0.99"
+        "--gpu-memory-utilization=0.85"
         "--dtype=float16"
       ];
       image = cfg.image;
