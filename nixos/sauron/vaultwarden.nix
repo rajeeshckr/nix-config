@@ -9,10 +9,8 @@ in {
     # https://github.com/dani-garcia/vaultwarden/wiki/Deployment-examples#nixos-by-tklitschi
     forceSSL = true;
     enableACME = true;
-    locations."/" = let
-      inherit (config.services.vaultwarden) config;
-    in {
-      proxyPass = "http://127.0.0.1:${toString config.ROCKET_PORT}";
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.vaultwarden.config.ROCKET_PORT}";
       recommendedProxySettings = true;
     };
   };
