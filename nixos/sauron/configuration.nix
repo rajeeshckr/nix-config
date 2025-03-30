@@ -791,10 +791,13 @@
     };
   };
 
+  # does not support automatic merging so cannot put these into modules
   nixpkgs.config.permittedInsecurePackages = [
     # for jackett
     "dotnet-sdk-6.0.428"
     "aspnetcore-runtime-6.0.36"
+    # maubot
+    "olm-3.2.16"
   ];
 
   
