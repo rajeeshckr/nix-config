@@ -41,6 +41,10 @@ in {
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    mailutils
+  ];
+
   ## alert on failure
   systemd.services = {
     "notify-problems@" = {

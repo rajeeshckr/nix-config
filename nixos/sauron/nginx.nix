@@ -82,21 +82,6 @@ in {
     proxy_cookie_path / "/; secure; HttpOnly; SameSite=strict";
     '';
 
-    virtualHosts."tv.samlockart.com" = {
-      forceSSL = true;
-      enableACME = true;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8096";
-      };
-    };
-    virtualHosts."tv.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8096";
-      };
-    };
-
     virtualHosts."www.iced.cool" = {
       # catch all
       forceSSL = true;
@@ -114,40 +99,7 @@ in {
         recommendedProxySettings = true;
       };
     };
-    tailscaleAuth = {
-      enable = true;
-      virtualHosts = [
-        "jackett.middleearth.samlockart.com"
-      ];
-    };
-    virtualHosts."sonarr.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8989";
-      };
-    };
-    virtualHosts."jackett.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:9117";
-      };
-    };
-    virtualHosts."bazarr.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString config.services.bazarr.listenPort}";
-      };
-    };
-    virtualHosts."radarr.middleearth.samlockart.com" = {
-      forceSSL = false;
-      enableACME = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:7878";
-      };
-    };
+ 
     virtualHosts."sync.middleearth.samlockart.com" = {
       forceSSL = false;
       enableACME = false;

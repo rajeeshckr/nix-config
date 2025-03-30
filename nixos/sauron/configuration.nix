@@ -20,7 +20,10 @@
       ./unifi.nix
       ./mail.nix
       ./pvpgn.nix
+      ./media.nix
       ./nginx.nix
+      ./syncthing.nix
+      ./openwebui.nix
 #      ../config/home-manager.nix # get working
     ];
 
@@ -45,16 +48,12 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
-      8384 22000 # syncthing
       22 # ssh via tailscale
       27015 # steam
-      8191 # flaresolverr
     ];
     allowedUDPPorts = [
-      22000 21027 # syncthing
       config.services.tailscale.port
       27015 # steam
-      1900 7359 # dlna jellyfin
     ];
     # always allow traffic from your Tailscale network
     trustedInterfaces = [ "tailscale0" ];
@@ -72,14 +71,6 @@
       isSystemUser = true;
       group = "emma";
     };
-    # services
-    syncthing = {
-      isSystemUser = true;
-      group = "syncthing";
-    };
-  };
-  users.groups = {
-    sftponly = {};
   };
 
   # List packages installed in system profile. To search, run:
@@ -88,10 +79,6 @@
     ipmiutil
     ipmitool
     steamcmd
-    mailutils
-    unstable.jellyfin
-    unstable.jellyfin-web
-    unstable.jellyfin-ffmpeg
     docker # todo - replace with podman
   ];
 
@@ -104,21 +91,6 @@
     };
   };
 
-  # selfhosted rarbg
-  # https://github.com/mgdigital/rarbg-selfhosted
-  virtualisation.oci-containers.containers = {
-    rarbg = {
-      image = "ghcr.io/mgdigital/rarbg-selfhosted:latest";
-      ports = ["3333:3333"];
-      volumes = ["/srv/data/rarbg_db.sqlite:/rarbg_db.sqlite"];
-    };
-
-    flaresolverr = {
-      image = "ghcr.io/flaresolverr/flaresolverr:latest";
-      ports = ["8191:8191"];
-    };
-  };
-
   services.openssh = {
     # support yubikey
     # https://developers.yubico.com/SSH/Securing_SSH_with_FIDO2.html
@@ -126,75 +98,6 @@
     PubkeyAuthOptions verify-required
   '';
   };
-
-  services.open-webui = {
-    enable = true;
-    openFirewall = true;
-    port = 11111;
-    environment = {
-      OLLAMA_API_BASE_URL = "http://desktop:11434";
-    };
-  };
-
-  # Syncthing
-  services.syncthing = {
-    enable = true;
-    user = "syncthing";
-    dataDir = "/srv/vault";    # Default folder for new synced folders
-    configDir = "/srv/data/syncthing";   # Folder for Syncthing's settings and keys
-    overrideDevices = true;     # overrides any devices added or deleted through the WebUI
-    overrideFolders = true;     # overrides any folders added or deleted through the WebUI
-    guiAddress = "http://0.0.0.0:8384";
-    settings = {
-      # TODO: use declarative node configuration
-      # https://wiki.nixos.org/wiki/Syncthing
-      devices = {
-        "laptop"   = { id = "5ATZ7LD-C3AYIMS-EXQZILG-2A743HY-4Y7ULQY-RODJR7F-GO43W6X-CLXDAAA"; };
-        "desktop"   = { id = "F7G62MY-FWFWFNY-PYVBZQE-S4EXYDX-IIPF4AQ-YAKJVP3-4TZXCKT-NAUTJQU"; };
-      };
-      folders = {
-        "vault" = {        # Name of folder in Syncthing, also the folder ID
-           path = "/srv/vault";    # Which folder to add to Syncthing
-           devices = [ "laptop" "desktop" ];      # Which devices to share the folder with
-        };
-      };
-    };
-  };
-
-  services.jellyfin = {
-    package = pkgs.unstable.jellyfin;
-    enable = true;
-    openFirewall = true;
-    dataDir = "/srv/data/jellyfin";
-    cacheDir = "/var/cache/jellyfin"; # leave on ssd
-  };
-
-  services.radarr = {
-    enable = true;
-    dataDir = "/srv/data/radarr";
-    openFirewall = true;
-  };
-  users.users.radarr.extraGroups = ["transmission"];
-
-  services.sonarr = {
-    enable = true;
-    dataDir = "/srv/data/sonarr";
-    openFirewall = true;
-  };
-  users.users.sonarr.extraGroups = ["transmission"];
-
-  services.jackett = {
-    enable = true;
-    dataDir = "/srv/data/jackett";
-    package = pkgs.unstable.jackett;
-    openFirewall = true;
-  };
-
-  services.bazarr = {
-    enable = true;
-    openFirewall = true;
-  };
-  users.users.bazarr.extraGroups = ["sonarr" "radarr"];
 
   services.tailscale.authKeyFile = config.age.secrets.tailscale-authkey.path;
 
