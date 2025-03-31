@@ -24,6 +24,7 @@
       ./nginx.nix
       ./syncthing.nix
       ./openwebui.nix
+      ./monitoring.nix
 #      ../config/home-manager.nix # get working
     ];
 
