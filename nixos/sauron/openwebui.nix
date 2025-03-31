@@ -11,8 +11,9 @@ in {
     port = 11111;
     environment = {
       OLLAMA_API_BASE_URL = "http://desktop:11434";
-      OPENAI_API_BASE_URL = "http://desktop:8000";
-      ENABLE_OPENAI_API = "true";
+      # for vllm use
+      # OPENAI_API_BASE_URL = "http://desktop:8000";
+      # ENABLE_OPENAI_API = "true";
       # todo: fill out with more of the settings i've overriden in the ui
     };
   };
