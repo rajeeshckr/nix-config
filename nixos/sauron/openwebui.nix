@@ -6,6 +6,7 @@ let cfg = config.server;
 in {
   services.open-webui = {
     enable = true;
+    package = pkgs.unstable.open-webui;
     openFirewall = true;
     port = 11111;
     environment = {
