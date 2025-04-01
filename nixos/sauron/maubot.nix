@@ -19,6 +19,9 @@ in {
       locations."/" = {
         proxyPass = "http://127.0.0.1:${toString settings.server.port}";
         proxyWebsockets = true;
+        extraConfig =
+          # https://github.com/mautrix/docs/pull/75/files
+          "proxy_http_version 1.1;";
       };
     };
   };
