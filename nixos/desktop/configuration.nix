@@ -13,8 +13,7 @@
       ../config/home-manager.nix
       ../config/nvidia.nix
       ../config/llm.nix
-      ./hardware-configuration.nix
-      ./vllm.nix
+      ./hardware-configuration.nix      
     ];
 
   networking.hostName = "desktop"; # Define your hostname.
@@ -29,19 +28,6 @@
     identityPaths = ["/home/sam/vault/ssh_keys/id_rsa"];
   };
 
-  # Syncthing
-  services.syncthing = {
-    enable = true;
-    user = "sam";
-    dataDir = "/home/sam/vault";    # Default folder for new synced folders
-    configDir = "/home/sam/.config/syncthing";   # Folder for Syncthing's settings and keys
-    guiAddress = "http://127.0.0.1:8384";
-    settings = {
-      devices = {
-        "laptop"   = { id = "5ATZ7LD-C3AYIMS-EXQZILG-2A743HY-4Y7ULQY-RODJR7F-GO43W6X-CLXDAAA"; };
-      };
-    };
-  };
 
   programs.wireshark.enable = true;
 
@@ -90,4 +76,3 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 }
-

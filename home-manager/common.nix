@@ -56,64 +56,8 @@
     };
 
   home = {
-    username = "sam";
-    homeDirectory = "/home/sam";
-  };
-
-  programs.zsh = {
-    enable = true; # must also be enabled in nixos
-    initExtra = ''
-      autoload -z edit-command-line
-      zle -N edit-command-line
-      bindkey "^X^E" edit-command-line
-
-      # https://unix.stackexchange.com/questions/284105/zsh-hash-directory-completion
-      setopt autocd cdable_vars
-
-      # Make "kubecolor" borrow the same completion logic as "kubectl"
-      compdef kubecolor=kubectl
-      compdef ka=kubectl
-
-      function ka () { 
-          kubectl "$1" --as admin --as-group system:masters "''${@:2}";
-      }
-
-      function kc () {
-          kubectl get --as admin --as-group system:masters --raw "/api/v1/nodes/$1/proxy/configz" "''${@:2}" | jq .
-      }
-
-      if [[ -f "/home/sam/vault/kube" ]]; then
-        export KUBECONFIG="/home/sam/vault/kube"
-      fi
-
-      export GOPRIVATE="github.com/alam0rt/*,github.com/zendesk/*"
-
-      # Load session vars
-      . ${config.home.profileDirectory}/etc/profile.d/hm-session-vars.sh
-
-      if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-        . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-      fi
-    '';
-    shellAliases = {
-      gst = "git status -s -b";
-      gco = "git checkout";
-      kubectl = "kubecolor";
-      k = "kubectl";
-      kgp = "kubectl get pods";
-      glog = "git log -S";
-    };
-    dirHashes = {
-      projects = "$HOME/projects";
-    };
-    history = {
-      ignorePatterns = [
-        "GITHUB_TOKEN"
-      ];
-    };
-    autosuggestion = {
-      enable = true;
-    };
+    username = "raj";
+    homeDirectory = "/home/raj";
   };
 
   programs.fzf = {
@@ -232,8 +176,8 @@
   programs.git = {
     enable = true;
     lfs.enable = true;
-    userName = "alam0rt";
-    userEmail = "sam@samlockart.com";
+    userName = "rajeeshckr";
+    userEmail = "rajeesh.ckr@gmail.com";
     aliases = {
       "new" = "!git checkout -b sam.lockart/$1 && :";
       "pl" = "!git fetch; git pull -r";
