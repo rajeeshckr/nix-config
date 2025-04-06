@@ -16,18 +16,12 @@
       ./hardware-configuration.nix      
     ];
 
-  networking.hostName = "desktop"; # Define your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
   networking.hostId = "cc74da59";
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   networking.firewall.enable = false;
-  # secrets
-  age = {
-    # TODO: will cause issues as syncthing needs to sync this before we can decrypt
-    identityPaths = ["/home/sam/vault/ssh_keys/id_rsa"];
-  };
-
 
   programs.wireshark.enable = true;
 
@@ -68,6 +62,71 @@
     remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+
+
+  # Enable the X11 windowing system.
+  services.xserver.enable = true;
+
+  # Enable the GNOME Desktop Environment.
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+
+  # Configure keymap in X11
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "";
+  };
+
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
+
+  # Enable sound with pipewire.
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+
+    # use the example session manager (no others are packaged yet so this is enabled by default,
+    # no need to redefine it in your config for now)
+    #media-session.enable = true;
+  };
+
+  # Enable touchpad support (enabled default in most desktopManager).
+  # services.xserver.libinput.enable = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.raj = {
+    isNormalUser = true;
+    description = "raj";
+    extraGroups = [ "networkmanager" "wheel" ];
+    packages = with pkgs; [
+    #  thunderbird
+    ];
+  };
+
+
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+
+  # Some programs need SUID wrappers, can be configured further or are
+  # started in user sessions.
+  # programs.mtr.enable = true;
+  # programs.gnupg.agent = {
+  #   enable = true;
+  #   enableSSHSupport = true;
+  # };
+
+  programs.git = {
+    enable = true;
+    userName  = "rajeeshckr";
+    userEmail = "rajeesh.ckr@gmail.com";
   };
 
   nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];
