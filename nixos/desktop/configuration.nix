@@ -11,7 +11,6 @@
       ../config/common
       ../config/network
       ../config/home-manager.nix
-      ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix      
     ];
