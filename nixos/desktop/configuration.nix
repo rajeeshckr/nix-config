@@ -127,12 +127,6 @@
   #   enableSSHSupport = true;
   # };
 
-  programs.git = {
-    enable = true;
-    userName  = "rajeeshckr";
-    userEmail = "rajeesh.ckr@gmail.com";
-  };
-
   nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];
 
   # Before changing this value read the documentation for this option
