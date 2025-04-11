@@ -12,6 +12,8 @@
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = ["nvidia"];
 
+  boot.kernelPackages = pkgs.linuxPackages_6_6;
+
   ## nvidia
   # Load nvidia driver for Xorg and Wayland
   hardware.nvidia = {
