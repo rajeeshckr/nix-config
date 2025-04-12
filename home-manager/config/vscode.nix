@@ -34,6 +34,10 @@
         github.copilot
         github.copilot-chat
         ms-vscode.makefile-tools
+
+        # remote ssh
+        ms-vscode-remote.remote-ssh-edit
+        ms-vscode-remote.remote-ssh        
     ];
   };
 }
