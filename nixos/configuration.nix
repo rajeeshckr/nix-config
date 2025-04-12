@@ -80,11 +80,9 @@
     enable = true;
     settings = {
       # Opinionated: forbid root login through SSH.
-      PermitRootLogin = "no";
+#       PermitRootLogin = "no";
       # Opinionated: use keys only.
       # Remove if you want to SSH using passwords
-      PasswordAuthentication = false;
-      X11Forwarding          = true;
     };
   };
 }
