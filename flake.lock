@@ -85,27 +85,6 @@
         "type": "github"
       }
     },
-    "nix-darwin": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1743350051,
-        "narHash": "sha256-QtVfBQe5VBnRPP5ustegPlsTdV/SZzt8akOIN5Hlwjk=",
-        "owner": "lnl7",
-        "repo": "nix-darwin",
-        "rev": "eaff8219d629bb86e71e3274e1b7915014e7fb22",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lnl7",
-        "ref": "master",
-        "repo": "nix-darwin",
-        "type": "github"
-      }
-    },
     "nix-github-actions": {
       "inputs": {
         "nixpkgs": [
@@ -159,24 +138,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-firefox-darwin": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_3"
-      },
-      "locked": {
-        "lastModified": 1743383039,
-        "narHash": "sha256-Palj4EeFRS3tLl2aK0FgE01SBWRbqD4vKE+SNBJaYo4=",
-        "owner": "bandithedoge",
-        "repo": "nixpkgs-firefox-darwin",
-        "rev": "96f1d9e12f0efbbc4cea47c0a06a1667ed90e5f8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "bandithedoge",
-        "repo": "nixpkgs-firefox-darwin",
-        "type": "github"
-      }
-    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1743315132,
@@ -205,22 +166,6 @@
       "original": {
         "owner": "nixos",
         "ref": "nixos-24.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_3": {
-      "locked": {
-        "lastModified": 1639237670,
-        "narHash": "sha256-RTdL4rEQcgaZGpvtDgkp3oK/V+1LM3I53n0ACPSroAQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "edfb969386ebe6c3cf8f878775a7975cd88f926d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -292,10 +237,8 @@
       "inputs": {
         "agenix": "agenix",
         "home-manager": "home-manager_2",
-        "nix-darwin": "nix-darwin",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
-        "nixpkgs-firefox-darwin": "nixpkgs-firefox-darwin",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nvidia-patch": "nvidia-patch",
         "pcsx-redux": "pcsx-redux",
