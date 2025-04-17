@@ -16,7 +16,7 @@
     oh-my-zsh = {
         enable = true;
         plugins = [ "git" "thefuck" ];
-        theme = "robbyrussell";
+        theme = "jonathan";
       };
       
     shellAliases = {
