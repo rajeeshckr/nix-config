@@ -13,7 +13,8 @@
       ../config/home-manager.nix
       ../config/nvidia.nix
       ../config/llm.nix
-      ./hardware-configuration.nix      
+      ./hardware-configuration.nix
+      ./media.nix 
     ];
 
   # Bootloader.
@@ -46,6 +47,7 @@
     wireshark
     wineWowPackages.stable
     winetricks
+    glances
 
     # fun
     unstable.lutris
@@ -69,6 +71,14 @@
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
+  # enable docker support
+  virtualisation.docker = {
+    enable = true;
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+  };
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -133,7 +143,7 @@
         }
     });
   '';
-  
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
