@@ -14,6 +14,7 @@
       ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix
+      ./transmission.nix
       ./media.nix 
     ];
 
