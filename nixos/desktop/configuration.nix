@@ -16,6 +16,7 @@
       ./hardware-configuration.nix
       ./transmission.nix
       ./media.nix 
+      ./samba.nix
     ];
 
   # Bootloader.
@@ -57,6 +58,8 @@
 
     # misc
     calibre
+
+    nixfmt-rfc-style
   ];
 
   # bluetooth
