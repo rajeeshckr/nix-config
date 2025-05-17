@@ -10,8 +10,8 @@ in {
     openFirewall = true;
     settings = {
       home = "/srv/data/transmission";
-      download-dir = "/srv/media/downloads";
-      incomplete-dir = "/srv/media/downloads/.incomplete";
+      download-dir = "/media/downloads";
+      incomplete-dir = "/media/downloads/.incomplete";
       trash-original-torrent-files = true;
       rpc-bind-address = "0.0.0.0";
       rpc-port = 9091;
