@@ -33,6 +33,12 @@
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
 
+  fileSystems."/media" = {
+    device = "/dev/sda2";
+    fsType = "auto"; # or the actual filesystem, e.g., "ext4", "ntfs", "xfs"
+    options = [ "defaults" ];
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
