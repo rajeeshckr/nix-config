@@ -11,7 +11,7 @@ in {
     settings = {
       home = "/srv/data/transmission";
       download-dir = "/media/downloads";
-      incomplete-dir = "/var/transmission/.incomplete";
+      incomplete-dir = "/media/transmission/.incomplete";
       trash-original-torrent-files = true;
       rpc-bind-address = "0.0.0.0";
       rpc-port = 9091;
