@@ -11,7 +11,7 @@
 
   # Set up Dynamic DNS with ddclient
   services.ddclient = {
-    enable = true;
+    enable = false;
     domains = [ "rajeeshckr.ddnsgeek.com" ]; # Replace with your actual DDNS domain
     username = "rajeesh.ckr@gmail.com"; # Replace with your DDNS username
     # passwordFile = config.age.secrets.ddclient-password.path;
