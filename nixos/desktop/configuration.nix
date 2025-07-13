@@ -28,11 +28,12 @@
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  networking.firewall.enable = false;
+  # Firewall now managed in network/internet-access.nix
+  # networking.firewall.enable = false;
 
   networking.useDHCP = false;
   networking.interfaces.enp6s0.ipv4.addresses = [{
-    address = "192.168.1.29";
+    address = "192.168.1.29"; # Set the static IP address
     prefixLength = 24;
   }];
   networking.defaultGateway = "192.168.1.1";
@@ -72,6 +73,12 @@
 
     # misc
     calibre
+
+    # networking and security
+    ddclient
+    tailscale
+    mkcert
+    certbot
 
     nixfmt-rfc-style
   ];

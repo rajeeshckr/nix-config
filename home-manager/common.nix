@@ -87,6 +87,7 @@
     kubectl-explore
     kubecolor
     stern
+    kind
 
     # core
     jq

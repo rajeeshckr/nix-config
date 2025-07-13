@@ -3,7 +3,7 @@
 {
   imports =
     [
-      ./tailscale.nix
+      ./internet-access.nix
     ];
 
 }
