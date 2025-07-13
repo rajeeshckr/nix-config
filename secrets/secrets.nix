@@ -1,7 +1,5 @@
-
-
 let
-  raj = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDNOSKuCJeOwyOqBF1uYhdT+xBRhfTmfLTFfCjyYbPfTKEN+1lrwq6NIbAlDNaiB2QmyWOkL/q8YZTqL5lsV0f+p5pYOlk4XqJZu75o7qU+UL1NRMKWhP3nkPFaajd3UkcTmS4dghZJbHbHEaQpdforBbsrOleh9p7sskLwABoYFkZDqBZRtgqYvHubsSPTWWzcu97pm8jJnKlj25Qw3WuIH5Arz+0w9ENUNV4Y36Hz+sgP+GhPQCird8O6bXgBPH436P36XdYb/a8SCY96xPMaSaW76tU/XVDImfkH7bGRdwRouO9gzjyzucdO51aK/OLaNitUdWkZVMnO2aQBkBNgvFtshU9fnt6ZLIuovsesACt8mLpNE74lKd4PGHxlz7KLcuBL9ZX3S9yr3TjlhEnb5EAahbhVWZuxVjZTPyOOnHqbFKeCRAmSbNFDrW8xWrzwLmdoSbCqWVmUFOMLEBEDMyOEByKHWpeBz5zFfxTloTNbwdYxgUG3o6xFzV9aYAU=";
+  raj = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDZNeEOWfDR8Rk6gLlOh0bT4BBIu0HmjXpBQWRb76rHfTZc5AKrHF5u1xqSbWltNcNtJ5yUg/JCKTx4RQMHfA5lX5S9jRsGQKIWmghz0DM6ElO2yXiQ9DkPdD4YHIUq/Y2VjH9lzYTLrZhZEosxxzQPfIAF0pXCZqTd/4O+nGoX0dV5KjXXXYa5HWJ0mLginy0yahFO9dfJBg0K27vDLeij8WNVuENZGChy3j5303qiuEHe23OxnsiIsZZ2TA6kfpOcL20s4HzDcAfMzlf6gX3Nk8I5db5jJwE4hKwbzHvxhfvoJSSBtdmRgTmW0htvMSmEckP5t7pWsIuQDWfk/d7xvBLvXhc0kxWDQ+QsKzDPSbqLszTTFFpGwtMApoV7sPjZOW7iLw1HH/Fd7uZ94EbHXq/qmBaxRugz0ChbucwnfdXAQcG9CsZFHZ0kBvz1BKdAQqLb4coS0J2mzpUcUcFedzlZKbD0pxEVOF4EeUm2mcGTKBE4I5ZcmCiS9TNlNMB0XjhWLZw/9tORfULtkKQ/2h5b82tPCmNfhn+pmtncooJSWgVb5E+e96ii2QyJApWSK+7Wci34gNnuPChR3tQ6VMiKhX7SpK+NsT9OKIisgha3CVAenwISrcVoerSgAzExTmh9ysRHl1FlPUYYBrJ3a/EMkNYCIoN3EGv1Rrg8PQ== rajeesh.ckr@gmail.com";
   users = [ raj ];
 in
 {
@@ -11,4 +9,5 @@ in
   "borg.age".publicKeys = users;
   "maubot-secret-config.age".publicKeys = users;
   "hugging-face-ro-token.age".publicKeys = users;
+  "ddclient-password.age".publicKeys = users;
 }

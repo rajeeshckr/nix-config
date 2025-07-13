@@ -14,7 +14,7 @@
     enable = true;
     domains = [ "rajeeshckr.ddnsgeek.com" ]; # Replace with your actual DDNS domain
     username = "rajeesh.ckr@gmail.com"; # Replace with your DDNS username
-    password = "1Hulk@123"; # Replace with your DDNS password or token
+    # passwordFile = config.age.secrets.ddclient-password.path;
     protocol = "dyndns2"; # Adjust based on your DDNS provider
     server = "members.dyndns.org"; # Adjust based on your DDNS provider
     interval = "5min";
@@ -42,7 +42,6 @@
   #       };
   #     };
   #     # Add more virtual hosts for other services as needed
-  #   };
   # };
 
   # Open specific ports in the firewall for services you want to expose
