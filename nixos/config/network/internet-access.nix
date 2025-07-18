@@ -2,7 +2,7 @@
 
 {
 
-  age.secrets.ddclient-password.file = ../../secrets/ddclient-password.age;
+  age.secrets.ddclient-password.file = ../../../secrets/ddclient-password.age;
   
   # Enable Tailscale Funnel to expose services through Tailscale
   services.tailscale = {
