@@ -3,11 +3,5 @@ let
   users = [ raj ];
 in
 {
-  "tailscale-authkey.age".publicKeys = users;
-  "tailscale-server.age".publicKeys = users;
-  "transmission-credentials.age".publicKeys = users;
-  "borg.age".publicKeys = users;
-  "maubot-secret-config.age".publicKeys = users;
-  "hugging-face-ro-token.age".publicKeys = users;
   "ddclient-password.age".publicKeys = users;
 }
