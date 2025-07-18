@@ -14,7 +14,7 @@
     enable = false;
     domains = [ "rajeeshckr.ddnsgeek.com" ];
     username = "rajeesh.ckr@gmail.com";
-    # passwordFile = config.age.secrets.ddclient-password.path;
+    passwordFile = config.age.secrets.ddclient-password.path;
     protocol = "dyndns2"; # Adjust based on your DDNS provider
     server = "members.dyndns.org"; # Adjust based on your DDNS provider
     interval = "5min";
