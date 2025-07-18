@@ -1,6 +1,9 @@
 { config, pkgs, ... }:
 
 {
+
+  age.secrets.ddclient-password.file = ../../secrets/ddclient-password.age;
+  
   # Enable Tailscale Funnel to expose services through Tailscale
   services.tailscale = {
     enable = true;
