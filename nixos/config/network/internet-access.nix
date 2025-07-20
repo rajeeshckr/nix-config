@@ -21,7 +21,7 @@
     protocol = "dyndns2"; # Adjust based on your DDNS provider
     server = "members.dyndns.org"; # Adjust based on your DDNS provider
     interval = "5min";
-    use = "web, web=checkip.dyndns.org/, web-skip='IP Address'";
+    # use = "web, web=checkip.dyndns.org/, web-skip='IP Address'";
   };
 
   # # Enable NAT and port forwarding
