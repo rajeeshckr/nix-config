@@ -12,6 +12,10 @@
     useRoutingFeatures = "both";
   };
 
+  services.cloudflared = {
+    enable = true;
+  };
+
   # Set up Dynamic DNS with ddclient
   services.ddclient = {
     enable = false;
