@@ -14,14 +14,14 @@
 
   # Set up Dynamic DNS with ddclient
   services.ddclient = {
-    enable = true;
+    enable = false;
     domains = [ "rajeeshckr.ddnsgeek.com" ];
     username = "rajeesh.ckr@gmail.com";
     passwordFile = config.age.secrets.ddclient-password.path;
     protocol = "dyndns2"; # Adjust based on your DDNS provider
     server = "members.dyndns.org"; # Adjust based on your DDNS provider
     interval = "5min";
-    # use = "web, web=checkip.dyndns.org/, web-skip='IP Address'";
+    use = "web";
   };
 
   # # Enable NAT and port forwarding
