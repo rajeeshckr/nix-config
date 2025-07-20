@@ -69,11 +69,6 @@
 
   age.identityPaths = [ "/root/.ssh/id_rsa" ];
 
-  users.users.root.openssh.authorizedKeys.keys = [
-    (builtins.readFile ./ssh_pubkeys/root_id_rsa.pub)
-  ];
-
-  
   # This setups a SSH server. Very important if you're setting up a headless system.
   # Feel free to remove if you don't need it.
   services.openssh = {
