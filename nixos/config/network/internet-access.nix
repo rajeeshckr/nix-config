@@ -54,7 +54,7 @@
   # Open specific ports in the firewall for services you want to expose
   networking.firewall = {
     enable = true; # Enable the firewall with specific rules
-    allowedTCPPorts = [ 80 443 8096 ]; # HTTP, HTTPS, Jellyfin
+    allowedTCPPorts = [ 80 443 8096 8000 ]; # HTTP, HTTPS, Jellyfin, test server
     allowedUDPPorts = [ 41641 ]; # Tailscale
   };
 }
