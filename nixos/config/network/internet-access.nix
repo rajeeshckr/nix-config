@@ -35,21 +35,22 @@
   #   externalInterface = "enp6s0"; # Your external interface from configuration.nix
   # };
 
-  # # Setup Nginx as a reverse proxy for your services
-  # services.nginx = {
-  #   enable = true;
-  #   recommendedProxySettings = true;
-  #   recommendedTlsSettings = true;
+  # Setup Nginx as a reverse proxy for your services
+  services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
     
-  #   virtualHosts = {
-  #     "rajeeshckr.ddnsgeek.com" = { # Your domain
-  #       locations."/" = {
-  #         proxyPass = "http://127.0.0.1:8096"; # Example: Jellyfin port
-  #         proxyWebsockets = true;
-  #       };
-  #     };
-  #     # Add more virtual hosts for other services as needed
-  # };
+    virtualHosts = {
+      "rajeeshckr.ddnsgeek.com" = { # Your domain
+        # This will proxy requests from /jellyfin/ to your Jellyfin service
+        locations."/jellyfin/" = {
+          proxyPass = "http://127.0.0.1:8096/"; # The trailing slash is important here
+          proxyWebsockets = true; # Required for Jellyfin
+        };
+      };
+      # Add more virtual hosts for other services as needed
+    };
+  };
 
   # Open specific ports in the firewall for services you want to expose
   networking.firewall = {
