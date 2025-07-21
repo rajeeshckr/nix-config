@@ -66,9 +66,8 @@
 
   environment.systemPackages = [ 
     inputs.agenix.packages.x86_64-linux.default
-    config.nixpkgs.pkgs.cloudflared
   ];
-  
+
   age.identityPaths = [ "/root/.ssh/id_rsa" ];
 
   # This setups a SSH server. Very important if you're setting up a headless system.
