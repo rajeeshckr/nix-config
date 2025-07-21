@@ -77,6 +77,9 @@
       nixos = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
+          ({pkgs, ...}: {
+            nixpkgs.pkgs = pkgs;
+          })
           # > Our main nixos configuration file <
           ./nixos/configuration.nix
           ./nixos/desktop/configuration.nix
