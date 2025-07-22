@@ -51,15 +51,29 @@
       "rajeeshckr.ddnsgeek.com" = { # Your domain
         enableACME = true; # Enable automatic certificate generation
         forceSSL = true;   # Redirect all HTTP traffic to HTTPS
+
+        # Add security and content policy headers
+        extraConfig = ''
+          # Security / XSS Mitigation Headers
+          add_header X-Content-Type-Options "nosniff" always;
+          # Content Security Policy
+          add_header Content-Security-Policy "default-src https: data: blob: ; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.youtube.com blob:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; frame-ancestors 'self';" always;
+        '';
+        
         # This will proxy requests from /jellyfin/ to your Jellyfin service
         locations."/jellyfin/" = {
           proxyPass = "http://127.0.0.1:8096/"; # The trailing slash is important here
           proxyWebsockets = true; # Required for Jellyfin
+          
           # Add headers to inform Jellyfin it's behind a secure proxy
           extraConfig = ''
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Protocol $scheme;
+
+            # Disable buffering when the nginx proxy gets very resource heavy upon streaming
+            proxy_buffering off;
           '';
         };
       };
