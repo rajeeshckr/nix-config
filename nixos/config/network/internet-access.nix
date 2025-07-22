@@ -35,6 +35,12 @@
   #   externalInterface = "enp6s0"; # Your external interface from configuration.nix
   # };
 
+  # Automatically obtain and renew SSL certificates from Let's Encrypt
+  security.acme = {
+    acceptTOS = true;
+    defaults.email = "rajeesh.ckr@gmail.com";
+  };
+
   # Setup Nginx as a reverse proxy for your services
   services.nginx = {
     enable = true;
@@ -42,6 +48,8 @@
     
     virtualHosts = {
       "rajeeshckr.ddnsgeek.com" = { # Your domain
+        enableACME = true; # Enable automatic certificate generation
+        forceSSL = true;   # Redirect all HTTP traffic to HTTPS
         # This will proxy requests from /jellyfin/ to your Jellyfin service
         locations."/jellyfin/" = {
           proxyPass = "http://127.0.0.1:8096/"; # The trailing slash is important here
