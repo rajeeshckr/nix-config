@@ -55,6 +55,12 @@
         locations."/jellyfin/" = {
           proxyPass = "http://127.0.0.1:8096/"; # The trailing slash is important here
           proxyWebsockets = true; # Required for Jellyfin
+          # Add headers to inform Jellyfin it's behind a secure proxy
+          extraConfig = ''
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+          '';
         };
       };
       # Add more virtual hosts for other services as needed
