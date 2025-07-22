@@ -37,9 +37,18 @@
 
   # Automatically obtain and renew SSL certificates from Let's Encrypt
   security.acme = {
-    acceptTOS = true;
+    acceptTerms = true;
     defaults.email = "rajeesh.ckr@gmail.com";
+    certs."rajeeshckr.ddnsgeek.com" = {
+      dnsProvider = "dynu";
+      # Supplying password files like this will make your credentials world-readable
+      # in the Nix store. This is for demonstration purpose only, do not use this in production.
+      environmentFile = "${pkgs.writeText "dynu-creds" ''
+        DYNU_API_KEY=${config.age.secrets.ddclient-password.path}
+      ''}";
+    };
   };
+
 
   # Setup Nginx as a reverse proxy for your services
   services.nginx = {
