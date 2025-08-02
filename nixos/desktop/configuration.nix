@@ -81,6 +81,8 @@
     certbot
 
     nixfmt-rfc-style
+
+    pkgs.authentik
   ];
 
   # bluetooth
