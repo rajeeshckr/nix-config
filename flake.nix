@@ -27,6 +27,10 @@
 
   outputs = {
     self,
+    nixpkgs,
+    home-manager,
+    agenix,
+    nixos-hardware,
     ...
   } @ inputs: let
     inherit (self) outputs;
