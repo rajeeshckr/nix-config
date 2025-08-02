@@ -19,7 +19,5 @@
       system = final.system;
       config.allowUnfree = true;
     };
-    
-    jackett = final.unstable.jackett;
   };
 }
