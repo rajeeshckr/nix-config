@@ -45,7 +45,7 @@ in {
   };
   users.users.bazarr.extraGroups = ["sonarr" "radarr"];
 
-  networking.firewall.allowedUDPPorts = [ 1900 7359 ]; # dlna
+  networking.firewall.allowedUDPPorts = [ 1900 7359 9091 9117 7878]; # dlna
   networking.firewall.allowedTCPPorts = [ 8191 ]; # flaresolverr
 
   # selfhosted rarbg
