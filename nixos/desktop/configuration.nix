@@ -35,8 +35,8 @@
   # networking.firewall.enable = false;
 
   networking.useDHCP = false;
-  networking.interfaces.enp6s0.ipv4.addresses = [{
-    address = "192.168.1.29"; # Set the static IP address
+  networking.interfaces.wlan0.ipv4.addresses = [{
+    address = "192.168.1.29"; # A *different* static IP for Wi-Fi
     prefixLength = 24;
   }];
   networking.defaultGateway = "192.168.1.1";
