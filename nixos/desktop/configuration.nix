@@ -83,6 +83,9 @@
     nixfmt-rfc-style
 
     pkgs.authentik
+
+    pciutils # Provides lspci
+    usbutils # Provides lsusb
   ];
 
   # bluetooth
