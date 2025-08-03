@@ -23,6 +23,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
+  # Use the latest stable kernel for better support of new hardware
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   networking.hostName = "nixos"; # Define your hostname.
   networking.hostId = "cc74da59";
 
