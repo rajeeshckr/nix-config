@@ -35,34 +35,12 @@
   # networking.firewall.enable = false;
 
   networking.useDHCP = false;
-# Add this block to define the connection declaratively
-  networking.networkmanager.connections = [{
-    # You can name this anything, but using the SSID is a good convention
-    name = "HOMENBN-5G-2"; 
-    settings = {
-      connection = {
-        id = "HOMENBN-5G-2"; # The name of your Wi-Fi network
-        type = "wifi";
-        interface-name = "wlan0";
-      };
-      wifi = {
-        mode = "infrastructure";
-        ssid = "HOMENBN-5G-2"; # The name of your Wi-Fi network
-      };
-      wifi-security = {
-        key-mgmt = "wpa-psk";
-        psk = "try2guess"; # Your Wi-Fi password
-      };
-      ipv4 = {
-        method = "manual";
-        address1 = "192.168.1.29/24,192.168.1.1"; # "IP/prefix,gateway"
-        dns = [ "8.8.8.8" "8.8.4.4" ];
-      };
-      ipv6 = {
-        method = "auto";
-      };
-    };
+  networking.interfaces.wlan0.ipv4.addresses = [{
+    address = "192.168.1.29"; # A *different* static IP for Wi-Fi
+    prefixLength = 24;
   }];
+  networking.defaultGateway = "192.168.1.1";
+  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
