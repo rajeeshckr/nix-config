@@ -11,7 +11,7 @@
       ../config/common
       ../config/network
       ../config/home-manager.nix
-      ../config/nvidia.nix
+#      ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix
       ./transmission.nix
@@ -185,7 +185,7 @@
   #   enableSSHSupport = true;
   # };
 
-  nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];
+  # nixpkgs.overlays = [inputs.nvidia-patch.overlays.default];
 
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
