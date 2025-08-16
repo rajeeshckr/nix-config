@@ -31,17 +31,6 @@
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  # Firewall now managed in network/internet-access.nix
-  # networking.firewall.enable = false;
-
-  networking.useDHCP = false;
-  networking.interfaces.wlan0.ipv4.addresses = [{
-    address = "192.168.1.29"; # A *different* static IP for Wi-Fi
-    prefixLength = 24;
-  }];
-  networking.defaultGateway = "192.168.1.1";
-  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
-
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
 
