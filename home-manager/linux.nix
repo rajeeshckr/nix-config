@@ -28,12 +28,6 @@
     };
   };
 
-  home.packages = with pkgs; [
-    # CAD / 3d
-    super-slicer-latest # doesn't build on darwin
-    # nix-shell -p ghidra -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/21808d22b1cda1898b71cf1a1beb524a97add2c4.tar.gz 
-  ];
-
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 

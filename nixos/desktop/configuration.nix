@@ -30,17 +30,25 @@
   networking.hostId = "cc74da59";
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
-
-  # Firewall now managed in network/internet-access.nix
-  # networking.firewall.enable = false;
-
-  networking.useDHCP = false;
-  networking.interfaces.wlan0.ipv4.addresses = [{
-    address = "192.168.1.29"; # A *different* static IP for Wi-Fi
-    prefixLength = 24;
-  }];
-  networking.defaultGateway = "192.168.1.1";
-  networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
+  
+  networking.networkmanager.systemConnections."HOMENBN-5G-1 1" = {
+    connection = {
+      id = "HOMENBN-5G-1 1";
+      type = "wifi";
+      interface-name = "wlan0";
+      uuid = "3d6d3ca0-1b90-4ac1-a894-05ba33d18c62";
+      autoconnect = true;
+    };
+    wifi = { ssid = "HOMENBN-5G-1"; mode = "infrastructure"; };
+    "wifi-security" = { key-mgmt = "wpa-psk"; psk = "<your-psk>"; };
+    ipv4 = {
+      method = "manual";
+      addresses = [ { address = "192.168.1.30"; prefixLength = 24; } ];
+      gateway = "192.168.1.1";
+      dns = [ "8.8.8.8" "8.8.4.4" ];
+    };
+    ipv6.method = "ignore";
+  };
 
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
