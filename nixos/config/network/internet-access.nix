@@ -76,6 +76,20 @@
             proxy_buffering off;
           '';
         };
+
+        # This will proxy requests from /radarr/ to your Radarr service
+        locations."/radarr/" = {
+          proxyPass = "http://127.0.0.1:7878/"; # The trailing slash is important here
+          proxyWebsockets = true;
+
+          # Forward common headers
+          extraConfig = ''
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host $host;
+            proxy_set_header X-Forwarded-Protocol $scheme;
+          '';
+        };
       };
       # Add more virtual hosts for other services as needed
     };
@@ -84,7 +98,7 @@
   # Open specific ports in the firewall for services you want to expose
   networking.firewall = {
     enable = true; # Enable the firewall with specific rules
-    allowedTCPPorts = [ 22 80 443 8096 8000 ]; # HTTP, HTTPS, Jellyfin, test server
+    allowedTCPPorts = [ 22 80 443 8096 8000 7878 ]; # HTTP, HTTPS, Jellyfin, vLLM, Radarr
     allowedUDPPorts = [ 41641 ]; # Tailscale
   };
 }
