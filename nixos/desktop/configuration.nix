@@ -11,7 +11,7 @@
       ../config/common
       ../config/network
       ../config/home-manager.nix
-#      ../config/nvidia.nix
+      ../config/nvidia.nix
       ../config/llm.nix
       ./hardware-configuration.nix
       ./transmission.nix
@@ -23,8 +23,9 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   
-  # Use the latest stable kernel for better support of new hardware
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  # Using default kernel for better NVIDIA driver compatibility.
+  # If you need to pin, prefer the default kernel:
+  # boot.kernelPackages = pkgs.linuxPackages;
 
   networking.hostName = "nixos"; # Define your hostname.
   networking.hostId = "cc74da59";
