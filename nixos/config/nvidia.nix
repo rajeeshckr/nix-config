@@ -26,9 +26,8 @@
         enable = false;
         finegrained = false;
       };
-      open = false;
+      open = true;
       nvidiaSettings = true;
-      cudaSupport = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
 
 #   package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
