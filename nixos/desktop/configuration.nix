@@ -79,6 +79,8 @@
 
     pciutils # Provides lspci
     usbutils # Provides lsusb
+
+    thefuck
   ];
 
   # bluetooth
