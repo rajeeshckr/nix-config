@@ -4,15 +4,24 @@
     nvidia.acceptLicense = true;
   };
 
-  # Enable OpenGL
+  boot.blacklistedKernelModules = [ "nouveau" ];
 
-  # Load nvidia driver for Xorg and Wayland
-  services.xserver.videoDrivers = ["modesetting" "nvidia"];
+  # Enable OpenGL/graphics stack
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true; # required for Steam and other 32-bit apps
+  };
+
+  # Load NVIDIA driver
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # Use Xorg session for GNOME to avoid Wayland/NVIDIA issues
+  services.xserver.displayManager.gdm.wayland = false;
 
   hardware = {
 
     nvidia = {
-      modesetting.enable = false;
+      modesetting.enable = true;
       powerManagement = {
         enable = false;
         finegrained = false;
