@@ -34,10 +34,11 @@
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
 
+  # Use a stable identifier (UUID) so the mount isn't broken when disk ordering changes
   fileSystems."/media" = {
-    device = "/dev/sda2";
-    fsType = "auto"; # or the actual filesystem, e.g., "ext4", "ntfs", "xfs"
-    options = [ "defaults" ];
+    device = "/dev/disk/by-uuid/f1bf15ac-ae5c-4c75-89dc-1b7030be6a46"; # ext4 partition
+    fsType = "ext4"; # was "auto"; specify explicitly for reliability
+    options = [ "defaults" "noatime" ]; # add noatime to reduce writes on a large media disk
   };
 
   # List packages installed in system profile. To search, run:
