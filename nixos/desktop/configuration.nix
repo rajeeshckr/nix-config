@@ -42,6 +42,15 @@
     options = [ "defaults" "noatime" ]; # add noatime to reduce writes on a large media disk
   };
 
+  # Second SSD mounted at /media2 (create & format the disk first; see instructions)
+  # After running: mkfs.ext4 -L MEDIA2 /dev/sdX1  (replace sdX1 with the new partition)
+  # this path /dev/disk/by-label/MEDIA2 will exist and mount declaratively.
+  fileSystems."/media2" = {
+    device = "/dev/disk/by-label/MEDIA2"; # stable label reference
+    fsType = "ext4";
+    options = [ "defaults" "noatime" ];
+  };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
