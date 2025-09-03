@@ -34,20 +34,42 @@
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
 
-  # Use a stable identifier (UUID) so the mount isn't broken when disk ordering changes
-  fileSystems."/media" = {
-    device = "/dev/disk/by-uuid/f1bf15ac-ae5c-4c75-89dc-1b7030be6a46"; # ext4 partition
-    fsType = "ext4"; # was "auto"; specify explicitly for reliability
-    options = [ "defaults" "noatime" ]; # add noatime to reduce writes on a large media disk
-  };
+  # --- Storage Pool Setup --------------------------------------------------
+  # Goal: Users keep using /media while data is transparently distributed
+  # across two physical disks (former /dev/sda2 + new SSD partition).
+  # Strategy: Mount each disk at a hidden/aux path then present a union
+  # view at /media using mergerfs (non-destructive, keeps existing data).
 
-  # Second SSD mounted at /media2 (create & format the disk first; see instructions)
-  # After running: mkfs.ext4 -L MEDIA2 /dev/sdX1  (replace sdX1 with the new partition)
-  # this path /dev/disk/by-label/MEDIA2 will exist and mount declaratively.
-  fileSystems."/media2" = {
-    device = "/dev/disk/by-label/MEDIA2"; # stable label reference
+  # Underlying first disk (existing data previously at /media)
+  fileSystems."/media-disk1" = {
+    device = "/dev/disk/by-uuid/f1bf15ac-ae5c-4c75-89dc-1b7030be6a46";
     fsType = "ext4";
     options = [ "defaults" "noatime" ];
+  };
+
+  # Underlying second disk (make sure it's formatted & labeled: mkfs.ext4 -L MEDIA2 /dev/sdb1)
+  fileSystems."/media-disk2" = {
+    device = "/dev/disk/by-label/MEDIA2";
+    fsType = "ext4";
+    options = [ "defaults" "noatime" ];
+  };
+
+  # Unified pool presented at /media
+  # mergerfs concatenates directories; new files placed according to policy.
+  # category.create=mfs => choose drive with most free space for new creates.
+  fileSystems."/media" = {
+    device = "/media-disk1:/media-disk2";
+    fsType = "fuse.mergerfs";
+    options = [
+      "defaults"
+      "allow_other"
+      "use_ino"
+      "category.create=mfs"
+      "moveonenospc=true"
+      "cache.files=partial"
+      "dropcacheonclose=true"
+      "fsname=mergerfs"
+    ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -90,6 +112,7 @@
     usbutils # Provides lsusb
 
     thefuck
+    mergerfs # required for the fuse.mergerfs pooled /media mount
   ];
 
   # bluetooth
