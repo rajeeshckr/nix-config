@@ -31,7 +31,7 @@
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
-  networking.networkmanager.connections = {
+  networking.networkmanager.connection = {
     "homenbn-5g-2-static" = {
       id = "HOMENBN-5G-2";
       type = "wifi";
