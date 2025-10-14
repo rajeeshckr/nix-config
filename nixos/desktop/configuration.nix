@@ -31,6 +31,27 @@
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
+  networking.networkmanager.connections = {
+    "homenbn-5g-2-static" = {
+      id = "HOMENBN-5G-2";
+      type = "wifi";
+      wifi = {
+        ssid = "HOMENBN-5G-2";
+      };
+      ipv4 = {
+        method = "manual";
+        addresses = [{
+          address = "192.168.1.30";
+          prefix = 24; # This is the subnet mask 255.255.255.0
+        }];
+        gateway = "192.168.1.1"; # <-- IMPORTANT: Change if your gateway is different
+        dns = [ "8.8.8.8" "8.8.4.4" ]; # Using Cloudflare and Google DNS
+      };
+      # If your Wi-Fi password is saved in NetworkManager, it should be picked up.
+      # If not, you might need to add wifi-security settings here.
+    };
+  };
+
   programs.wireshark.enable = true;
   programs.nix-ld.enable = true;
 
