@@ -4,7 +4,7 @@
   # ollama / LLM
   services.ollama = {
     enable = true;
-    package = pkgs.unstable.ollama-cuda;
+    package = pkgs.ollama-cuda;
     port = 11434;
     host = "0.0.0.0";
     acceleration = "cuda";
