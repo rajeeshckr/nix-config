@@ -4,7 +4,12 @@
     nvidia.acceptLicense = true;
   };
 
-  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.blacklistedKernelModules = [ "nouveau" "nvidiafb" ];
+
+  # Helpful on very new GPUs while waiting for official support
+  boot.kernelParams = [
+    "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
+  ];
 
   # Enable OpenGL/graphics stack
   hardware.graphics = {
@@ -26,15 +31,16 @@
         enable = false;
         finegrained = false;
       };
-      open = false;
+      open = true;
       nvidiaSettings = true;
+      nvidiaPersistenced = true;
       package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
         version = "580.95.05";
-        sha256_64bit = lib.fakeSha256;
-        sha256_aarch64 = lib.fakeSha256;
-        openSha256 = lib.fakeSha256;
-        settingsSha256 = lib.fakeSha256;
-        persistencedSha256 = lib.fakeSha256;
+        sha256_64bit = "sha256-hJ7w746EK5gGss3p8RwTA9VPGpp2lGfk5dlhsv4Rgqc=";
+        sha256_aarch64 = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+        openSha256 = "sha256-RFwDGQOi9jVngVONCOB5m/IYKZIeGEle7h0+0yGnBEI=";
+        settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
+        persistencedSha256 = "sha256-QCwxXQfG/Pa7jSTBB0xD3lsIofcerAWWAHKvWjWGQtg=";
       };
 
 #   package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
