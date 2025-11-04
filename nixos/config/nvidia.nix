@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   nixpkgs.config = {
     nvidia.acceptLicense = true;
@@ -28,7 +28,14 @@
       };
       open = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+        version = "580.95.05";
+        sha256_64bit = lib.fakeSha256;
+        sha256_aarch64 = lib.fakeSha256;
+        openSha256 = lib.fakeSha256;
+        settingsSha256 = lib.fakeSha256;
+        persistencedSha256 = lib.fakeSha256;
+      };
 
 #   package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
  #    version = "570.133.07";
