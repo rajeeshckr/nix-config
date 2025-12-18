@@ -19,6 +19,7 @@ in {
   };
 
   services.radarr = {
+    package = pkgs.unstable.radarr;
     enable = true;
     dataDir = "/srv/data/radarr";
     openFirewall = true;
