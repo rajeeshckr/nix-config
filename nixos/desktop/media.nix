@@ -51,16 +51,21 @@ in {
 
   # selfhosted rarbg
   # https://github.com/mgdigital/rarbg-selfhosted
-#   virtualisation.oci-containers.containers = {
-#     rarbg = {
-#       image = "ghcr.io/mgdigital/rarbg-selfhosted:latest";
-#       ports = ["3333:3333"];
-#       volumes = ["/srv/data/rarbg_db.sqlite:/rarbg_db.sqlite"];
-#     };
+  # virtualisation.oci-containers.containers = {
+  #   rarbg = {
+  #     image = "ghcr.io/mgdigital/rarbg-selfhosted:latest";
+  #     ports = ["3333:3333"];
+  #     volumes = ["/srv/data/rarbg_db.sqlite:/rarbg_db.sqlite"];
+  #   };
+  # };
 
-#     flaresolverr = {
-#       image = "ghcr.io/flaresolverr/flaresolverr:latest";
-#       ports = ["8191:8191"];
-#     };
-#   };
+  # FlareSolverr - bypass Cloudflare protection for Jackett
+  virtualisation.oci-containers.containers.flaresolverr = {
+    image = "ghcr.io/flaresolverr/flaresolverr:latest";
+    ports = ["8191:8191"];
+    environment = {
+      LOG_LEVEL = "info";
+      TZ = "Australia/Melbourne";
+    };
+  };
 }
