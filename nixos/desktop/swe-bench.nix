@@ -29,7 +29,7 @@ let
     
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
-    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct}"
+    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     
     # Add user bin to PATH
     export PATH="$HOME/.local/bin:$PATH"
@@ -57,7 +57,7 @@ let
     
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
-    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct}"
+    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     DATASET="''${DATASET:-princeton-nlp/SWE-bench_Lite}"
     
     # Add user bin to PATH
@@ -100,7 +100,7 @@ let
     
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
-    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct}"
+    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     
     # Add user bin to PATH
     export PATH="$HOME/.local/bin:$PATH"
