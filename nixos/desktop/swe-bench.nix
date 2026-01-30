@@ -17,33 +17,36 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Python environment with pip for installing mini-swe-agent
-  pythonEnv = pkgs.python312.withPackages (ps: with ps; [
-    pip
-    virtualenv
-  ]);
+  # Virtual environment location
+  venvDir = "$HOME/.swe-agent-venv";
 
   # mini-swe-agent runner script for interactive use
   mini-agent = pkgs.writeShellScriptBin "mini-agent" ''
     set -e
     
+    VENV_DIR="${venvDir}"
+    
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
     MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     
-    # Add user bin to PATH
-    export PATH="$HOME/.local/bin:$PATH"
+    # Activate virtual environment
+    if [ ! -d "$VENV_DIR" ]; then
+      echo "mini-swe-agent not installed. Run 'swe-bench-setup' first."
+      exit 1
+    fi
+    source "$VENV_DIR/bin/activate"
     
     # Check if mini-swe-agent is installed
     if ! command -v mini &> /dev/null; then
-      echo "mini-swe-agent not found. Run 'swe-bench-setup' first."
+      echo "mini-swe-agent not found in venv. Run 'swe-bench-setup' first."
       exit 1
     fi
     
     # Check if vLLM is running
     if ! curl -s "$OPENAI_BASE_URL/models" > /dev/null 2>&1; then
       echo "Warning: vLLM not responding at $OPENAI_BASE_URL"
-      echo "Start it with: docker start vllm"
+      echo "Start it with: systemctl start podman-vllm"
       echo ""
     fi
     
@@ -55,13 +58,19 @@ let
   swe-bench-run = pkgs.writeShellScriptBin "swe-bench-run" ''
     set -e
     
+    VENV_DIR="${venvDir}"
+    
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
     MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     DATASET="''${DATASET:-princeton-nlp/SWE-bench_Lite}"
     
-    # Add user bin to PATH
-    export PATH="$HOME/.local/bin:$PATH"
+    # Activate virtual environment
+    if [ ! -d "$VENV_DIR" ]; then
+      echo "mini-swe-agent not installed. Run 'swe-bench-setup' first."
+      exit 1
+    fi
+    source "$VENV_DIR/bin/activate"
     
     echo "=== SWE-bench Runner (mini-swe-agent) ==="
     echo "vLLM URL: $OPENAI_BASE_URL"
@@ -78,7 +87,7 @@ let
     # Check if vLLM is running
     if ! curl -s "$OPENAI_BASE_URL/models" > /dev/null 2>&1; then
       echo "Error: vLLM is not running at $OPENAI_BASE_URL"
-      echo "Start it with: docker start vllm"
+      echo "Start it with: systemctl start podman-vllm"
       exit 1
     fi
     
@@ -98,31 +107,34 @@ let
   swe-bench-test = pkgs.writeShellScriptBin "swe-bench-test" ''
     set -e
     
+    VENV_DIR="${venvDir}"
+    
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
     MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     
-    # Add user bin to PATH
-    export PATH="$HOME/.local/bin:$PATH"
-    
     echo "=== SWE-bench Setup Test ==="
     echo ""
     
-    # Test 1: Check Docker
-    echo "[1/5] Checking Docker..."
-    if docker info > /dev/null 2>&1; then
+    # Test 1: Check Docker/Podman
+    echo "[1/5] Checking container runtime..."
+    if podman info > /dev/null 2>&1; then
+      echo "  ✓ Podman is running"
+    elif docker info > /dev/null 2>&1; then
       echo "  ✓ Docker is running"
     else
-      echo "  ✗ Docker is not running"
+      echo "  ✗ No container runtime available"
       exit 1
     fi
     
-    # Test 2: Check NVIDIA Container Toolkit
-    echo "[2/5] Checking NVIDIA GPU access..."
-    if docker run --rm --gpus all nvidia/cuda:12.0-base nvidia-smi > /dev/null 2>&1; then
-      echo "  ✓ GPU accessible from containers"
+    # Test 2: Check NVIDIA GPU
+    echo "[2/5] Checking NVIDIA GPU..."
+    if nvidia-smi > /dev/null 2>&1; then
+      GPU_NAME=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1)
+      GPU_MEM=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader | head -1)
+      echo "  ✓ GPU: $GPU_NAME ($GPU_MEM)"
     else
-      echo "  ✗ GPU not accessible (check nvidia-container-toolkit)"
+      echo "  ✗ NVIDIA GPU not available"
       exit 1
     fi
     
@@ -133,7 +145,7 @@ let
       echo "  ✓ vLLM running with model: $MODEL"
     else
       echo "  ✗ vLLM not responding at $OPENAI_BASE_URL"
-      echo "    Start with: docker start vllm"
+      echo "    Check with: journalctl -u podman-vllm -f"
       exit 1
     fi
     
@@ -156,9 +168,15 @@ let
     
     # Test 5: Check mini-swe-agent
     echo "[5/5] Checking mini-swe-agent..."
-    if command -v mini &> /dev/null; then
-      VERSION=$(mini --version 2>/dev/null || echo "installed")
-      echo "  ✓ mini-swe-agent: $VERSION"
+    if [ -d "$VENV_DIR" ]; then
+      source "$VENV_DIR/bin/activate"
+      if command -v mini &> /dev/null; then
+        VERSION=$(mini --version 2>/dev/null || echo "installed")
+        echo "  ✓ mini-swe-agent: $VERSION"
+      else
+        echo "  ⚠ mini-swe-agent venv exists but 'mini' not found"
+        echo "    Run 'swe-bench-setup' to reinstall"
+      fi
     else
       echo "  ⚠ mini-swe-agent not installed yet"
       echo "    Run 'swe-bench-setup' to install it"
@@ -176,35 +194,49 @@ let
     echo "  mini-agent 'Write a hello world script'"
   '';
 
-  # Setup script to install mini-swe-agent
+  # Setup script to install mini-swe-agent in a venv
   swe-bench-setup = pkgs.writeShellScriptBin "swe-bench-setup" ''
     set -e
+    
+    VENV_DIR="${venvDir}"
     
     echo "=== SWE-bench Setup (mini-swe-agent) ==="
     echo ""
     
-    echo "[1/2] Installing mini-swe-agent..."
-    pip install --user --upgrade mini-swe-agent
+    echo "[1/3] Creating Python virtual environment..."
+    if [ -d "$VENV_DIR" ]; then
+      echo "  Removing existing venv..."
+      rm -rf "$VENV_DIR"
+    fi
+    ${pkgs.python312}/bin/python -m venv "$VENV_DIR"
+    source "$VENV_DIR/bin/activate"
     
-    # Ensure ~/.local/bin is in PATH for current session
-    export PATH="$HOME/.local/bin:$PATH"
+    echo "[2/3] Installing mini-swe-agent..."
+    pip install --upgrade pip
+    pip install mini-swe-agent
     
-    # Check if it works
+    # Verify installation
     if command -v mini &> /dev/null; then
-      echo "  ✓ mini-swe-agent installed successfully"
+      VERSION=$(mini --version 2>/dev/null || echo "installed")
+      echo "  ✓ mini-swe-agent installed: $VERSION"
     else
-      echo ""
-      echo "  Add this to your ~/.bashrc or ~/.zshrc:"
-      echo '    export PATH="$HOME/.local/bin:$PATH"'
-      echo ""
+      echo "  ✗ Installation failed"
+      exit 1
     fi
     
     echo ""
-    echo "[2/2] Pulling vLLM Docker image (if not present)..."
-    docker pull vllm/vllm-openai:latest
+    echo "[3/3] Checking vLLM..."
+    if curl -s "http://localhost:8000/v1/models" > /dev/null 2>&1; then
+      echo "  ✓ vLLM is running"
+    else
+      echo "  ⚠ vLLM not responding yet"
+      echo "    Check with: journalctl -u podman-vllm -f"
+    fi
     
     echo ""
     echo "=== Setup complete! ==="
+    echo ""
+    echo "Virtual environment: $VENV_DIR"
     echo ""
     echo "Next steps:"
     echo "  1. Run 'swe-bench-test' to verify everything works"
@@ -249,9 +281,9 @@ in {
     ./vllm.nix
   ];
 
-  # Add helper scripts and Python to system packages
+  # Add helper scripts to system packages
   environment.systemPackages = [
-    pythonEnv
+    pkgs.python312
     mini-agent
     swe-bench-run
     swe-bench-test
@@ -262,7 +294,7 @@ in {
     pkgs.git  # Required by mini-swe-agent for git operations
   ];
 
-  # Ensure user can access docker
+  # Ensure user can access docker/podman
   users.users.raj.extraGroups = lib.mkAfter [ "docker" ];
 
   # Create working directories
