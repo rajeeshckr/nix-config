@@ -4,9 +4,9 @@
 , ... }:
 let 
   cfg = {
-    # Qwen2.5-Coder-7B-Instruct-AWQ - 4-bit quantized (~4GB VRAM)
-    # Best balance: good quality + plenty of room for 32K context on 16GB GPU
-    model = "Qwen/Qwen2.5-Coder-7B-Instruct-AWQ";
+    # Qwen2.5-Coder-3B-Instruct - Full FP16 (~6GB VRAM)
+    # Smaller model = more room for longer context (important for SWE-bench)
+    model = "Qwen/Qwen2.5-Coder-3B-Instruct";
     image = "vllm/vllm-openai:latest";
     port = 8000;
   };
@@ -29,7 +29,7 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "32768"  # 32K context - AWQ leaves plenty of room
+        "--max-model-len" "65536"  # 64K context - 3B model leaves plenty of room
         "--gpu-memory-utilization" "0.90"
       ];
       image = cfg.image;
