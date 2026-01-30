@@ -35,6 +35,8 @@ let
     # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
+    # Ignore cost tracking errors for local models not in LiteLLM's price DB
+    export MSWEA_COST_TRACKING="ignore_errors"
     # Use openai/ prefix for litellm compatibility
     MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     
@@ -79,6 +81,8 @@ let
     # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
+    # Ignore cost tracking errors for local models not in LiteLLM's price DB
+    export MSWEA_COST_TRACKING="ignore_errors"
     # Use openai/ prefix for litellm compatibility
     MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     DATASET="''${DATASET:-princeton-nlp/SWE-bench_Lite}"
@@ -262,6 +266,8 @@ let
 DEFAULT_MODEL=openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
 OPENAI_API_KEY=not-needed
 OPENAI_BASE_URL=http://localhost:8000/v1
+# Ignore cost tracking errors for local models not in LiteLLM's price DB
+MSWEA_COST_TRACKING=ignore_errors
 ENVEOF
     echo "  ✓ Config written to $CONFIG_DIR/.env"
     
