@@ -29,7 +29,7 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "65536"  # 64K context - 3B model leaves plenty of room
+        "--max-model-len" "32768"  # 32K context - model's max supported length
         "--gpu-memory-utilization" "0.90"
       ];
       image = cfg.image;
