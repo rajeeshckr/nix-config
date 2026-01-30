@@ -79,7 +79,7 @@ let
     echo ""
     
     # Check if mini-swe-agent is installed
-    if ! command -v mini-swebench &> /dev/null; then
+    if ! command -v mini &> /dev/null; then
       echo "mini-swe-agent not found. Run 'swe-bench-setup' first."
       exit 1
     fi
@@ -95,9 +95,9 @@ let
     curl -s "$OPENAI_BASE_URL/models" | ${pkgs.jq}/bin/jq -r '.data[].id'
     echo ""
     
-    # Run SWE-bench evaluation
+    # Run SWE-bench evaluation using mini-swe-agent's swebench command
     echo "Starting SWE-bench evaluation..."
-    exec mini-swebench \
+    exec mini swebench \
       --model "$MODEL_NAME" \
       --dataset "$DATASET" \
       "$@"
