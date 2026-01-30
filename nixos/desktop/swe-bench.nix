@@ -1,7 +1,7 @@
 # SWE-bench configuration for running AI coding benchmarks
 # 
 # This module sets up mini-swe-agent for running SWE-bench evaluations
-# using your local vLLM instance with Qwen2.5-Coder-14B.
+# using your local vLLM instance with Qwen2.5-Coder-7B.
 #
 # Usage:
 #   1. Rebuild: sudo nixos-rebuild switch --flake .#nixos
@@ -38,7 +38,7 @@ let
     # Ignore cost tracking errors for local models not in LiteLLM's price DB
     export MSWEA_COST_TRACKING="ignore_errors"
     # Use openai/ prefix for litellm compatibility
-    MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
+    MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-7B-Instruct}"
     
     # Activate virtual environment
     if [ ! -d "$VENV_DIR" ]; then
@@ -84,7 +84,7 @@ let
     # Ignore cost tracking errors for local models not in LiteLLM's price DB
     export MSWEA_COST_TRACKING="ignore_errors"
     # Use openai/ prefix for litellm compatibility
-    MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
+    MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-7B-Instruct}"
     DATASET="''${DATASET:-princeton-nlp/SWE-bench_Lite}"
     
     # Activate virtual environment
@@ -140,7 +140,7 @@ let
     # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
-    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
+    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-7B-Instruct}"
     
     echo "=== SWE-bench Setup Test ==="
     echo ""
@@ -263,7 +263,7 @@ let
     cat > "$CONFIG_DIR/.env" << 'ENVEOF'
 # mini-swe-agent configuration for local vLLM
 # Model uses openai/ prefix for litellm compatibility
-DEFAULT_MODEL=openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
+DEFAULT_MODEL=openai/Qwen/Qwen2.5-Coder-7B-Instruct
 OPENAI_API_KEY=not-needed
 OPENAI_BASE_URL=http://localhost:8000/v1
 # Ignore cost tracking errors for local models not in LiteLLM's price DB

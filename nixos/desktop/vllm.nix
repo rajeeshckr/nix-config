@@ -4,9 +4,9 @@
 , ... }:
 let 
   cfg = {
-    # Qwen2.5-Coder-14B-Instruct-AWQ - pre-quantized 4-bit, fits in 16GB
-    # AWQ maintains good quality while using ~8GB VRAM
-    model = "Qwen/Qwen2.5-Coder-14B-Instruct-AWQ";
+    # Qwen2.5-Coder-7B-Instruct - Full precision FP16 for best quality
+    # 7B fits comfortably in 16GB VRAM with room for KV cache
+    model = "Qwen/Qwen2.5-Coder-7B-Instruct";
     image = "vllm/vllm-openai:latest";
     port = 8000;
   };
@@ -29,8 +29,8 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "32768"  # Qwen2.5-Coder supports 32K+, needed for SWE-bench
-        "--gpu-memory-utilization" "0.95"  # Increased to fit larger KV cache
+        "--max-model-len" "16384"  # 16K context - balanced for FP16 7B model
+        "--gpu-memory-utilization" "0.95"
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
