@@ -29,8 +29,8 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "8192"
-        "--gpu-memory-utilization" "0.90"
+        "--max-model-len" "32768"  # Qwen2.5-Coder supports 32K+, needed for SWE-bench
+        "--gpu-memory-utilization" "0.95"  # Increased to fit larger KV cache
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
