@@ -17,11 +17,20 @@
 { config, lib, pkgs, ... }:
 
 let
+  # Library path for pip-installed packages with C extensions (numpy, etc.)
+  libPath = lib.makeLibraryPath [
+    pkgs.stdenv.cc.cc.lib
+    pkgs.zlib
+  ];
+
   # mini-swe-agent runner script for interactive use
   mini-agent = pkgs.writeShellScriptBin "mini-agent" ''
     set -e
     
     VENV_DIR="$HOME/.swe-agent-venv"
+    
+    # Set library path for numpy and other C extensions
+    export LD_LIBRARY_PATH="${libPath}:$LD_LIBRARY_PATH"
     
     # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
@@ -50,7 +59,12 @@ let
     fi
     
     # Run mini-swe-agent with visual UI
-    exec mini -v --model "$MODEL_NAME" "$@"
+    # If a task is provided as argument, pass it with --task
+    if [ $# -gt 0 ]; then
+      exec mini -v --model "$MODEL_NAME" --task "$*"
+    else
+      exec mini -v --model "$MODEL_NAME"
+    fi
   '';
 
   # SWE-bench benchmark runner
@@ -58,6 +72,9 @@ let
     set -e
     
     VENV_DIR="$HOME/.swe-agent-venv"
+    
+    # Set library path for numpy and other C extensions
+    export LD_LIBRARY_PATH="${libPath}:$LD_LIBRARY_PATH"
     
     # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
@@ -112,6 +129,9 @@ let
     set -e
     
     VENV_DIR="$HOME/.swe-agent-venv"
+    
+    # Set library path for numpy and other C extensions
+    export LD_LIBRARY_PATH="${libPath}:$LD_LIBRARY_PATH"
     
     # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
@@ -204,6 +224,9 @@ let
     set -e
     
     VENV_DIR="$HOME/.swe-agent-venv"
+    
+    # Set library path for numpy and other C extensions
+    export LD_LIBRARY_PATH="${libPath}:$LD_LIBRARY_PATH"
     
     echo "=== SWE-bench Setup (mini-swe-agent) ==="
     echo ""
