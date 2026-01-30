@@ -4,10 +4,13 @@
 , ... }:
 let 
   cfg = {
-    # Qwen2.5-Coder-14B is optimal for 16GB VRAM - great for code tasks & SWE-bench
+    # Qwen2.5-Coder-14B with FP8 quantization - best quality for 16GB VRAM
+    # FP8 has minimal quality loss compared to FP16
     model = "Qwen/Qwen2.5-Coder-14B-Instruct";
     image = "vllm/vllm-openai:latest";
     port = 8000;
+    # Use FP8 quantization to fit in 16GB
+    quantization = "fp8";
   };
 in {
   hardware.nvidia-container-toolkit.enable = true;
@@ -29,8 +32,8 @@ in {
       cmd = [
         "--model" cfg.model
         "--max-model-len" "4096"
-        "--gpu-memory-utilization=0.85"
-        "--dtype=float16"
+        "--gpu-memory-utilization" "0.90"
+        "--quantization" cfg.quantization
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
