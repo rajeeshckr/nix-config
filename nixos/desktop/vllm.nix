@@ -4,7 +4,8 @@
 , ... }:
 let 
   cfg = {
-    model = "google/gemma-3-12b-pt";
+    # Qwen2.5-Coder-14B is optimal for 16GB VRAM - great for code tasks & SWE-bench
+    model = "Qwen/Qwen2.5-Coder-14B-Instruct";
     image = "vllm/vllm-openai:latest";
     port = 8000;
   };
@@ -13,8 +14,7 @@ in {
   age.secrets.hugging-face-ro-token.file = ../../secrets/hugging-face-ro-token.age;
   virtualisation.oci-containers.containers = {
     vllm = {
-      # disable for now
-      autoStart = false;
+      autoStart = true;
       preRunExtraOptions = [
         "--storage-driver=overlay" # not sure why, but this gets blanked out
       ];
