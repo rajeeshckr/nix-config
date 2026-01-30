@@ -17,18 +17,17 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Virtual environment location
-  venvDir = "$HOME/.swe-agent-venv";
-
   # mini-swe-agent runner script for interactive use
   mini-agent = pkgs.writeShellScriptBin "mini-agent" ''
     set -e
     
-    VENV_DIR="${venvDir}"
+    VENV_DIR="$HOME/.swe-agent-venv"
     
+    # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
-    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
+    # Use openai/ prefix for litellm compatibility
+    MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     
     # Activate virtual environment
     if [ ! -d "$VENV_DIR" ]; then
@@ -58,11 +57,13 @@ let
   swe-bench-run = pkgs.writeShellScriptBin "swe-bench-run" ''
     set -e
     
-    VENV_DIR="${venvDir}"
+    VENV_DIR="$HOME/.swe-agent-venv"
     
+    # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
-    MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
+    # Use openai/ prefix for litellm compatibility
+    MODEL_NAME="''${MODEL_NAME:-openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
     DATASET="''${DATASET:-princeton-nlp/SWE-bench_Lite}"
     
     # Activate virtual environment
@@ -95,11 +96,14 @@ let
     curl -s "$OPENAI_BASE_URL/models" | ${pkgs.jq}/bin/jq -r '.data[].id'
     echo ""
     
-    # Run SWE-bench evaluation using mini-swe-agent's swebench command
+    # Run SWE-bench evaluation using mini-extra swebench command
+    # --subset: lite (300), verified (500), or full (2294)
+    # --slice: range like 0:1 for first instance
     echo "Starting SWE-bench evaluation..."
-    exec mini swebench \
+    exec mini-extra swebench \
       --model "$MODEL_NAME" \
-      --dataset "$DATASET" \
+      --subset lite \
+      --output "$HOME/.mini-swe-agent/runs" \
       "$@"
   '';
 
@@ -107,8 +111,9 @@ let
   swe-bench-test = pkgs.writeShellScriptBin "swe-bench-test" ''
     set -e
     
-    VENV_DIR="${venvDir}"
+    VENV_DIR="$HOME/.swe-agent-venv"
     
+    # Configure for local vLLM
     export OPENAI_API_KEY="''${OPENAI_API_KEY:-not-needed}"
     export OPENAI_BASE_URL="''${OPENAI_BASE_URL:-http://localhost:8000/v1}"
     MODEL_NAME="''${MODEL_NAME:-Qwen/Qwen2.5-Coder-14B-Instruct-AWQ}"
@@ -198,7 +203,7 @@ let
   swe-bench-setup = pkgs.writeShellScriptBin "swe-bench-setup" ''
     set -e
     
-    VENV_DIR="${venvDir}"
+    VENV_DIR="$HOME/.swe-agent-venv"
     
     echo "=== SWE-bench Setup (mini-swe-agent) ==="
     echo ""
@@ -211,9 +216,9 @@ let
     ${pkgs.python312}/bin/python -m venv "$VENV_DIR"
     source "$VENV_DIR/bin/activate"
     
-    echo "[2/3] Installing mini-swe-agent..."
+    echo "[2/4] Installing mini-swe-agent and dependencies..."
     pip install --upgrade pip
-    pip install mini-swe-agent
+    pip install mini-swe-agent datasets
     
     # Verify installation
     if command -v mini &> /dev/null; then
@@ -225,7 +230,20 @@ let
     fi
     
     echo ""
-    echo "[3/3] Checking vLLM..."
+    echo "[3/4] Configuring mini-swe-agent for local vLLM..."
+    CONFIG_DIR="$HOME/.config/mini-swe-agent"
+    mkdir -p "$CONFIG_DIR"
+    cat > "$CONFIG_DIR/.env" << 'ENVEOF'
+# mini-swe-agent configuration for local vLLM
+# Model uses openai/ prefix for litellm compatibility
+DEFAULT_MODEL=openai/Qwen/Qwen2.5-Coder-14B-Instruct-AWQ
+OPENAI_API_KEY=not-needed
+OPENAI_BASE_URL=http://localhost:8000/v1
+ENVEOF
+    echo "  ✓ Config written to $CONFIG_DIR/.env"
+    
+    echo ""
+    echo "[4/4] Checking vLLM..."
     if curl -s "http://localhost:8000/v1/models" > /dev/null 2>&1; then
       echo "  ✓ vLLM is running"
     else
