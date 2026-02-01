@@ -29,8 +29,11 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "50000"  # 50K context - safely fits in 6.64GB KV cache
-        "--gpu-memory-utilization" "0.95"
+        "--max-model-len" "80000"  # ~80K context with FP8 KV cache
+        "--gpu-memory-utilization" "0.90"  # Leave headroom for sampler/ops
+        "--kv-cache-dtype" "fp8_e5m2"  # ~50% KV cache memory reduction
+        "--enable-chunked-prefill"  # Better memory efficiency for long prompts
+        "--max-num-seqs" "32"  # Reduce concurrent sequences (default 256)
       ];
       image = cfg.image;
       ports = ["${toString cfg.port}:8000"];
