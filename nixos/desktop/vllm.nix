@@ -29,7 +29,7 @@ in {
       ];
       cmd = [
         "--model" cfg.model
-        "--max-model-len" "50000"  # 50K context - safely fits in 6.64GB KV cache
+        "--max-model-len" "55000"  # 55K context - slight increase for larger SWE-bench instances
         "--gpu-memory-utilization" "0.95"
       ];
       image = cfg.image;

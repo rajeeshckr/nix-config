@@ -1,6 +1,9 @@
 { pkgs, ... }:
 
 {
+  # Allow wheel group to sudo without password
+  security.sudo.wheelNeedsPassword = false;
+
   users.groups.raj = {};
   users.users = {
     raj = {
