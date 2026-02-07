@@ -4,8 +4,8 @@
 #   podman build -t spliteasy-backend:latest ~/spliteasy/backend
 #
 # After rebuild, the service is managed by systemd:
-#   systemctl status docker-spliteasy-backend
-#   journalctl -u docker-spliteasy-backend -f
+#   systemctl status podman-spliteasy-backend
+#   journalctl -u podman-spliteasy-backend -f
 #
 { config
 , lib
@@ -26,6 +26,9 @@ in {
   virtualisation.oci-containers.containers.spliteasy-backend = {
     autoStart = true;
     image = cfg.image;
+    extraOptions = [
+      "--pull=never"  # image is built locally, don't try to pull from a registry
+    ];
     ports = ["${toString cfg.port}:8080"];
     volumes = [
       "${cfg.dataDir}:/app/data:Z"
