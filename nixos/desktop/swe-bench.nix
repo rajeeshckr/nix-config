@@ -86,6 +86,8 @@ let
     # Use openai/ prefix for litellm compatibility
     MODEL_NAME="''${MODEL_NAME:-openai/NousResearch/Hermes-3-Llama-3.2-3B}"
     DATASET="''${DATASET:-princeton-nlp/SWE-bench_Lite}"
+    # Step limit (default 250, can increase with STEPS=500 swe-bench-run ...)
+    STEPS="''${STEPS:-250}"
     
     # Activate virtual environment
     if [ ! -d "$VENV_DIR" ]; then
@@ -98,6 +100,7 @@ let
     echo "vLLM URL: $OPENAI_BASE_URL"
     echo "Model: $MODEL_NAME"
     echo "Dataset: $DATASET"
+    echo "Max steps: $STEPS"
     echo ""
     
     # Check if mini-swe-agent is installed
@@ -120,10 +123,12 @@ let
     # Run SWE-bench evaluation using mini-extra swebench command
     # --subset: lite (300), verified (500), or full (2294)
     # --slice: range like 0:1 for first instance
+    # --steps: maximum agent steps per instance
     echo "Starting SWE-bench evaluation..."
     exec mini-extra swebench \
       --model "$MODEL_NAME" \
       --subset lite \
+      --steps "$STEPS" \
       --output "$HOME/.mini-swe-agent/runs" \
       "$@"
   '';
