@@ -18,6 +18,7 @@
       ./media.nix 
       ./samba.nix
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
+      ./spliteasy.nix  # SplitEasy expense splitting backend
     ];
 
   # Bootloader.
