@@ -27,6 +27,8 @@ let
     dataDir = "/var/lib/spliteasy";
   };
 in {
+  environment.systemPackages = [ pkgs.sqlite ];
+
   # Ensure data directory exists
   systemd.tmpfiles.rules = [
     "d ${cfg.dataDir} 0755 root root -"
