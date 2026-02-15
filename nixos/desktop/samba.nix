@@ -34,6 +34,16 @@ in
         "create mask" = "0644";
         "directory mask" = "0755";
       };
+      # Exposes the mergerfs pool — mobile can copy torrent downloads here
+      "media" = {
+        "path" = "/media";
+        "browseable" = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+        "force user" = "raj";
+      };
     };
   };
 
@@ -42,22 +52,7 @@ in
     openFirewall = true;
   };
 
-  # Mount external SMB share
-  fileSystems."/movies-indian" = {
-    device = "//192.168.1.1/USB_Storage";
-    fsType = "cifs";
-    options = [
-      "guest"             # Use guest account, no password needed
-      "uid=1000"          # Mount as your user (run `id -u raj` to confirm)
-      "gid=986"           # Mount as the 'users' group (run `id -g raj` to confirm)
-      "iocharset=utf8"    # Character set for file names
-      "nofail"            # Don't block boot if the share is unavailable
-      "_netdev"           # This is a network device
-      "x-systemd.automount" # Mount on first access
-    ];
-  };
-
-  # Ensure cifs-utils is available for SMB mounting
+  # Ensure cifs-utils is available for SMB mounting (if needed in future)
   environment.systemPackages = with pkgs; [
     cifs-utils
   ];

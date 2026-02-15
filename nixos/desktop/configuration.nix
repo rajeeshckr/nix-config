@@ -57,11 +57,27 @@
     options = [ "defaults" "noatime" ];
   };
 
+  # USB drive (NTFS) — movies from router USB, now directly attached
+  fileSystems."/media-usb" = {
+    device = "/dev/disk/by-uuid/123FBA6720264B40";
+    fsType = "ntfs-3g";
+    options = [
+      "defaults"
+      "noatime"
+      "uid=1000"          # mount as raj
+      "gid=986"           # mount as users group
+      "dmask=022"         # directory permissions
+      "fmask=133"         # file permissions
+      "nofail"            # don't block boot if drive is absent
+    ];
+  };
+
   # Unified pool presented at /media
   # mergerfs concatenates directories; new files placed according to policy.
   # category.create=mfs => choose drive with most free space for new creates.
+  # Includes USB drive (/media-usb) — existing movies appear in /media.
   fileSystems."/media" = {
-    device = "/media-disk1:/media-disk2";
+    device = "/media-disk1:/media-disk2:/media-usb";
     fsType = "fuse.mergerfs";
     options = [
       "defaults"
@@ -72,6 +88,7 @@
       "cache.files=partial"
       "dropcacheonclose=true"
       "fsname=mergerfs"
+      "minfreespace=1G"       # skip branches with <1G free for new writes
     ];
   };
 
@@ -116,6 +133,7 @@
 
     thefuck
     mergerfs # required for the fuse.mergerfs pooled /media mount
+    ntfs3g   # required for NTFS USB drive mount
   ];
 
   # bluetooth
