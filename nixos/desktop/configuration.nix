@@ -57,19 +57,11 @@
     options = [ "defaults" "noatime" ];
   };
 
-  # USB drive (NTFS) — movies from router USB, now directly attached
+  # USB drive (ext4) — third storage disk, formerly NTFS router USB
   fileSystems."/media-usb" = {
-    device = "/dev/disk/by-uuid/123FBA6720264B40";
-    fsType = "ntfs-3g";
-    options = [
-      "defaults"
-      "noatime"
-      "uid=1000"          # mount as raj
-      "gid=986"           # mount as users group
-      "dmask=022"         # directory permissions
-      "fmask=133"         # file permissions
-      "nofail"            # don't block boot if drive is absent
-    ];
+    device = "/dev/disk/by-label/MEDIA3";
+    fsType = "ext4";
+    options = [ "defaults" "noatime" "nofail" ];
   };
 
   # Unified pool presented at /media
@@ -133,7 +125,6 @@
 
     thefuck
     mergerfs # required for the fuse.mergerfs pooled /media mount
-    ntfs3g   # required for NTFS USB drive mount
   ];
 
   # bluetooth
