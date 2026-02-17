@@ -40,8 +40,10 @@ in
         "browseable" = "yes";
         "read only" = "no";
         "guest ok" = "yes";
-        "create mask" = "0644";
-        "directory mask" = "0755";
+        "create mask" = "0666";
+        "directory mask" = "0777";
+        "force create mode" = "0666";
+        "force directory mode" = "0777";
         "force user" = "raj";
       };
     };
