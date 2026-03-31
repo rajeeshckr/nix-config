@@ -36,7 +36,35 @@
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   programs.wireshark.enable = true;
+
+  # nix-ld provides the dynamic linker that VS Code Remote SSH server needs
   programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    stdenv.cc.cc.lib
+    zlib
+    openssl
+    glib
+    nss
+    nspr
+    dbus
+    atk
+    cups
+    libdrm
+    gtk3
+    pango
+    cairo
+    xorg.libX11
+    xorg.libXcomposite
+    xorg.libXdamage
+    xorg.libXext
+    xorg.libXfixes
+    xorg.libXrandr
+    xorg.libxcb
+    mesa
+    expat
+    alsa-lib
+    icu
+  ];
 
   # --- Storage Pool Setup --------------------------------------------------
   # Goal: Users keep using /media while data is transparently distributed
@@ -91,6 +119,8 @@
     # core
     vim
     firefox
+    curl
+    wget
     
     # social
     mumble
