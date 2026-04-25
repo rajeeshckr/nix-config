@@ -3,6 +3,5 @@ let
   users = [ root ];
 in
 {
-  "ddclient-password.age".publicKeys = users;
   "hugging-face-ro-token.age".publicKeys = users;
 }

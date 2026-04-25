@@ -1,104 +1,96 @@
 { config, pkgs, ... }:
 
 {
-
-  age.secrets.ddclient-password.file = ../../../secrets/ddclient-password.age;
-  
-  # Enable Tailscale Funnel to expose services through Tailscale
+  # Tailscale — overlay network used to reach LAN-only services
+  # (radarr / sonarr / jackett / transmission etc.) from the road.
   services.tailscale = {
     enable = true;
     openFirewall = true;
-    # Enable experimental features (needed for Funnel)
     useRoutingFeatures = "both";
   };
 
+  # cloudflared (Cloudflare Tunnel) is installed but inactive until a tunnel
+  # is configured. Currently unused — kept for the option of closing
+  # router port-forwards 80/443 in future.
   services.cloudflared = {
     enable = true;
   };
 
-  # Set up Dynamic DNS with ddclient
-  services.ddclient = {
-    enable = false;
-    domains = [ "rajeeshckr.ddnsgeek.com" ];
-    username = "rajeesh.ckr@gmail.com";
-    passwordFile = config.age.secrets.ddclient-password.path;
-    protocol = "dyndns2"; # Adjust based on your DDNS provider
-    server = "members.dyndns.org"; # Adjust based on your DDNS provider
-    interval = "5min";
-    use = "web";
-  };
-
-  # # Enable NAT and port forwarding
-  # networking.nat = {
-  #   enable = true;
-  #   internalInterfaces = ["ve-+"];
-  #   externalInterface = "enp6s0"; # Your external interface from configuration.nix
-  # };
-
-  # Automatically obtain and renew SSL certificates from Let's Encrypt
+  # Let's Encrypt for nginx vhosts below.
   security.acme = {
     acceptTerms = true;
     defaults.email = "rajeesh.ckr@gmail.com";
   };
 
-
-  # Setup Nginx as a reverse proxy for your services
+  # Reverse proxy. Each public-facing service gets its own subdomain on
+  # rajeeshckr.uk (DNS managed by Cloudflare, set to "DNS only" — grey
+  # cloud — so HTTP-01 ACME challenges work and Cloudflare's free-plan
+  # 100 MB upload cap doesn't bite Immich).
+  #
+  # Convention: one subdomain per service, proxied to the loopback port the
+  # service already listens on. LAN clients can still hit the service
+  # directly on its native port via 192.168.1.30:<port>.
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
-    
+
     virtualHosts = {
-      "rajeeshckr.ddnsgeek.com" = { # Your domain
-        enableACME = true; # Enable automatic certificate generation
-        forceSSL = true;   # Redirect all HTTP traffic to HTTPS
-
-        # Add security and content policy headers
+      "immich.rajeeshckr.uk" = {
+        enableACME = true;
+        forceSSL = true;
+        # Immich uploads originals (raw photos, 4K video) — needs big body
+        # size and long timeouts. nginx default of 1 MB will reject uploads
+        # with HTTP 413.
         extraConfig = ''
-          # Security / XSS Mitigation Headers
-          add_header X-Content-Type-Options "nosniff" always;
-          # Content Security Policy
-          add_header Content-Security-Policy "default-src https: data: blob: ; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.youtube.com blob:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; frame-ancestors 'self';" always;
+          client_max_body_size 50000M;
+          proxy_read_timeout   600s;
+          proxy_send_timeout   600s;
+          send_timeout         600s;
         '';
-        
-        # This will proxy requests from /jellyfin/ to your Jellyfin service
-        locations."/jellyfin/" = {
-          proxyPass = "http://127.0.0.1:8096/"; # The trailing slash is important here
-          proxyWebsockets = true; # Required for Jellyfin
-          
-          # Add headers to inform Jellyfin it's behind a secure proxy
-          extraConfig = ''
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Host $host;
-            proxy_set_header X-Forwarded-Protocol $scheme;
-
-            # Disable buffering when the nginx proxy gets very resource heavy upon streaming
-            proxy_buffering off;
-          '';
-        };
-
-        # This will proxy requests from /radarr/ to your Radarr service
-        locations."/radarr/" = {
-          proxyPass = "http://127.0.0.1:7878/"; # The trailing slash is important here
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:2283";
           proxyWebsockets = true;
-
-          # Forward common headers
           extraConfig = ''
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Host $host;
-            proxy_set_header X-Forwarded-Protocol $scheme;
+            proxy_set_header X-Forwarded-Host  $host;
+            proxy_buffering        off;
+            proxy_request_buffering off;
           '';
         };
       };
-      # Add more virtual hosts for other services as needed
+
+      "jellyfin.rajeeshckr.uk" = {
+        enableACME = true;
+        forceSSL = true;
+        extraConfig = ''
+          add_header X-Content-Type-Options "nosniff" always;
+        '';
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8096";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_set_header X-Forwarded-For      $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto    $scheme;
+            proxy_set_header X-Forwarded-Host     $host;
+            proxy_set_header X-Forwarded-Protocol $scheme;
+            proxy_buffering off;
+          '';
+        };
+      };
     };
   };
 
-  # Open specific ports in the firewall for services you want to expose
+  # Firewall:
+  #   80/443  — public HTTP(S) for nginx (router forwards these from WAN)
+  #   8096    — Jellyfin direct LAN access (TVs / clients on the same subnet)
+  #   7878    — Radarr LAN access
+  #   8000    — vLLM LAN access
+  # Per-service ports for transmission / sonarr / jackett / bazarr are opened
+  # by their own modules via `openFirewall = true`.
   networking.firewall = {
-    enable = true; # Enable the firewall with specific rules
-    allowedTCPPorts = [ 22 80 443 8096 8000 7878 ]; # HTTP, HTTPS, Jellyfin, vLLM, Radarr
+    enable = true;
+    allowedTCPPorts = [ 22 80 443 8096 8000 7878 ];
     allowedUDPPorts = [ 41641 ]; # Tailscale
   };
 }

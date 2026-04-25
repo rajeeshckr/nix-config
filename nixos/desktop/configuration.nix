@@ -16,6 +16,7 @@
       ./hardware-configuration.nix
       ./transmission.nix
       ./media.nix 
+      ./immich.nix
       ./samba.nix
       # ./media-rename.nix
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
