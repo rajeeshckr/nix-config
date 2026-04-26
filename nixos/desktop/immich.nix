@@ -1,5 +1,9 @@
 { config, lib, pkgs, ... }:
 
+# `immich-go` is added to systemPackages so we have a CLI to import Google
+# Takeout / iCloud / etc. archives. It re-applies dates & GPS from JSON
+# sidecars that Google strips out — needed for the timeline to be correct.
+
 # Self-hosted photo/video backup (https://immich.app).
 # Uses the native NixOS module (services.immich) instead of the upstream
 # docker-compose stack — it provisions PostgreSQL (with the required
@@ -46,4 +50,6 @@
     "d /srv/data 0755 root root - -"
     "d /srv/data/immich 0750 immich immich - -"
   ];
+
+  environment.systemPackages = [ pkgs.immich-go ];
 }
