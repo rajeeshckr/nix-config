@@ -60,6 +60,31 @@
         };
       };
 
+      # Vaultwarden (Bitwarden-compatible) — see nixos/desktop/vaultwarden.nix.
+      # Bitwarden clients (browser ext, mobile, CLI) require HTTPS, so this
+      # vhost is the only way to actually use the vault. The websocket path
+      # piggybacks on the same port in modern vaultwarden — `proxyWebsockets`
+      # plus the Upgrade/Connection headers below cover both /api and
+      # /notifications/hub.
+      "vault.rajeeshckr.uk" = {
+        enableACME = true;
+        forceSSL = true;
+        # Vaultwarden allows attachments up to 128 MiB by default; bump
+        # nginx's body limit so attaching files doesn't 413.
+        extraConfig = ''
+          client_max_body_size 256M;
+        '';
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8222";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-Host  $host;
+          '';
+        };
+      };
+
       "jellyfin.rajeeshckr.uk" = {
         enableACME = true;
         forceSSL = true;

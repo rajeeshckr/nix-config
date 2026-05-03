@@ -21,6 +21,8 @@
       # ./media-rename.nix
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
       ./spliteasy.nix  # SplitEasy expense splitting backend
+      ./vaultwarden.nix # Self-hosted Bitwarden-compatible password manager
+      ./monitoring     # Prometheus + Grafana + per-service exporters
     ];
 
   # Bootloader.
