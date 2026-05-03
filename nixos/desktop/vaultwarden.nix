@@ -1,5 +1,13 @@
 { config, lib, pkgs, ... }:
 
+# NOTE: pinned to nixpkgs-unstable (via the `unstable-packages` overlay).
+# nixpkgs 24.11 ships vaultwarden 1.33.2, which is missing the
+# `MasterPasswordUnlock` field that Bitwarden Android 2026.x and newer
+# expect in /api/sync. Symptom on the older server: Android client
+# crashes on unlock with `MissingPropertyException: Missing the
+# required MasterPasswordUnlock data property`. Track upstream from
+# unstable until 25.05+ becomes our nixpkgs base.
+
 # Self-hosted Bitwarden-compatible password manager.
 #
 # We run *Vaultwarden* (https://github.com/dani-garcia/vaultwarden), the
@@ -16,7 +24,7 @@
 #         ▼
 #   vaultwarden :8222
 #         │
-#         └─ sqlite at /var/lib/bitwarden_rs/db.sqlite3
+#         └─ sqlite at /var/lib/vaultwarden/db.sqlite3
 #
 # IMPORTANT:
 #   Bitwarden clients refuse to connect to a non-HTTPS server URL, which is
@@ -48,27 +56,32 @@
   services.vaultwarden = {
     enable = true;
 
+    # Track upstream — see top-of-file note for why.
+    package = pkgs.unstable.vaultwarden;
+    webVaultPackage = pkgs.unstable.vaultwarden.webvault;
+
     # sqlite is plenty for a single-household vault and means no extra DB
-    # service to babysit. The sqlite file lives under
-    # /var/lib/bitwarden_rs/ (StateDirectory of the systemd unit).
+    # service to babysit. The sqlite file lives under /var/lib/vaultwarden
+    # (StateDirectory of the systemd unit).
     dbBackend = "sqlite";
 
     # Nightly sqlite backup snapshot. The module wires up a systemd timer
     # that runs `sqlite3 .backup` into this directory.
     backupDir = "/srv/data/vaultwarden/backup";
 
-    # Public URL clients will be told to use. Must match the nginx vhost.
-    domain = "https://vault.rajeeshckr.uk";
-
     config = {
+      # Public URL clients will be told to use. Must match the nginx vhost.
+      DOMAIN = "https://vault.rajeeshckr.uk";
+
       # Bind on loopback only — nginx terminates TLS and proxies in.
       ROCKET_ADDRESS = "127.0.0.1";
       ROCKET_PORT = 8222;
 
-      # Hide the "Create account" form on the login page. Flip to `false`
-      # once you (and anyone you want to share with) have signed up.
-      # Existing users keep working either way.
-      SIGNUPS_ALLOWED = true;
+      # Public signup form is closed. Existing accounts log in fine; new
+      # users have to be invited from the /admin panel (see env-file
+      # section below for how to enable it). Flip to `true` temporarily
+      # if you need to add a household member without setting up admin.
+      SIGNUPS_ALLOWED = false;
 
       # Don't let just anyone with the public URL invite themselves into
       # an org — invites must come from an org owner.

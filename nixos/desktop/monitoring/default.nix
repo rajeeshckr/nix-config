@@ -38,9 +38,14 @@
 #      to a blackbox probe (just up/down + latency).
 
 let
+  # Port choices avoid existing collisions on this host:
+  #   :3000 → spliteasy-webclient   ⇒ Grafana on :3001
+  #   :9090 → spliteasy-backend     ⇒ Prometheus on :9095
+  #   :9091 → transmission rpc
+  #   :9117 → jackett
   ports = {
-    grafana       = 3000;
-    prometheus    = 9090;
+    grafana       = 3001;
+    prometheus    = 9095;
     node          = 9100;
     nginxExporter = 9113;
     blackbox      = 9115;
@@ -205,10 +210,10 @@ in
       Type = "simple";
       Restart = "on-failure";
       RestartSec = "30s";
-      DynamicUser = true;
-      # Needs to read /srv/data/sonarr/config.xml. Sonarr writes it
-      # world-readable by default, but lock down via group anyway.
-      SupplementaryGroups = [ "sonarr" ];
+      # /srv/data/sonarr is mode 0700 owned by sonarr — easiest way to
+      # read its config.xml is to just *be* the sonarr user.
+      User = "sonarr";
+      Group = "sonarr";
       ProtectSystem = "strict";
       PrivateTmp = true;
     };
@@ -231,8 +236,8 @@ in
       Type = "simple";
       Restart = "on-failure";
       RestartSec = "30s";
-      DynamicUser = true;
-      SupplementaryGroups = [ "radarr" ];
+      User = "radarr";
+      Group = "radarr";
       ProtectSystem = "strict";
       PrivateTmp = true;
     };
