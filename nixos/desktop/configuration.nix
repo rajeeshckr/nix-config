@@ -23,6 +23,7 @@
       ./spliteasy.nix  # SplitEasy expense splitting backend
       ./vaultwarden.nix # Self-hosted Bitwarden-compatible password manager
       ./monitoring     # Prometheus + Grafana + per-service exporters
+      ./nightly-suspend.nix # Suspend at 02:00, RTC wake at 08:00 (with safety gates)
     ];
 
   # Bootloader.
@@ -237,7 +238,11 @@
   nixpkgs.config.allowUnfree = true;
 
 
-  # disable auto suspend
+  # Disable GDM's idle auto-suspend (we don't want the box napping on its own),
+  # but allow members of `wheel` to suspend/hibernate explicitly via
+  # `systemctl suspend` (and via scheduled root system units, which bypass
+  # polkit anyway). This is what enables nightly suspend-to-RAM for power saving
+  # while keeping unprivileged sessions from putting the server to sleep.
   services.xserver.displayManager.gdm.autoSuspend = false;
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
@@ -246,6 +251,9 @@
             action.id == "org.freedesktop.login1.hibernate" ||
             action.id == "org.freedesktop.login1.hibernate-multiple-sessions")
         {
+            if (subject.isInGroup("wheel")) {
+                return polkit.Result.YES;
+            }
             return polkit.Result.NO;
         }
     });
