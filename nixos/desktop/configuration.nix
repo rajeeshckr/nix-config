@@ -22,6 +22,7 @@
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
       ./spliteasy.nix  # SplitEasy expense splitting backend
       ./vaultwarden.nix # Self-hosted Bitwarden-compatible password manager
+      ./authentik.nix  # Authentik SSO/IdP (OIDC + nginx forward-auth outpost)
       ./monitoring     # Prometheus + Grafana + per-service exporters
       ./nightly-suspend.nix # Suspend at 02:00, RTC wake at 08:00 (with safety gates)
     ];

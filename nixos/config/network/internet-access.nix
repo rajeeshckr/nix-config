@@ -111,11 +111,13 @@
   #   8096    — Jellyfin direct LAN access (TVs / clients on the same subnet)
   #   7878    — Radarr LAN access
   #   8000    — vLLM LAN access
+  #   9000    — Authentik direct LAN access (skip nginx vhost / cert hassle for
+  #             admin actions; the public path is still https://auth.rajeeshckr.uk)
   # Per-service ports for transmission / sonarr / jackett / bazarr are opened
   # by their own modules via `openFirewall = true`.
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 22 80 443 8096 8000 7878 ];
+    allowedTCPPorts = [ 22 80 443 8096 8000 7878 9000 ];
     allowedUDPPorts = [ 41641 ]; # Tailscale
   };
 }

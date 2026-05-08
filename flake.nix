@@ -28,6 +28,14 @@
 
     # hardware modules
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    # Authentik (SSO / IdP) — community flake providing the NixOS module,
+    # outpost packages, postgres/redis wiring and a binary cache.
+    # nixpkgs ships only the `authentik` package (no `services.authentik`),
+    # so this flake is what makes it actually deployable.
+    # IMPORTANT: do NOT set inputs.nixpkgs.follows here — upstream warns
+    # that overriding the pinned nixpkgs breaks the python deps.
+    authentik-nix.url = "github:nix-community/authentik-nix";
   };
 
   outputs = {
@@ -76,6 +84,7 @@
           # > Our main nixos configuration file <
           ./nixos/configuration.nix
           ./nixos/desktop/configuration.nix
+          inputs.authentik-nix.nixosModules.default
         ];
       };
     };
