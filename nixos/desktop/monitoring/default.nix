@@ -80,9 +80,12 @@ in
         http_port = ports.grafana;
       };
       security = {
-        # Cookies served via HTTPS proxy must be marked Secure to be sent
-        # back from modern browsers when accessing the public subdomain.
-        cookie_secure = true;
+        # Leave cookie_secure off: with it enabled, logins over plain HTTP
+        # on the LAN (http://<host>:3001) silently fail because the browser
+        # refuses to send the Secure-flagged session cookie back. The HTTPS
+        # subdomain still works fine without it. If we ever drop the LAN
+        # listener and go HTTPS-only, flip this back on.
+        cookie_secure = false;
       };
       analytics.reporting_enabled = false;
     };
