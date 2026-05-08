@@ -46,8 +46,11 @@ in {
   };
   users.users.bazarr.extraGroups = ["sonarr" "radarr"];
 
-  networking.firewall.allowedUDPPorts = [ 1900 7359 9091 9117 7878]; # dlna
-  networking.firewall.allowedTCPPorts = [ 8191 ]; # flaresolverr
+  networking.firewall.allowedUDPPorts = [ 1900 7359 9117 7878 ]; # dlna
+  networking.firewall.allowedTCPPorts = [
+    8191 # flaresolverr
+    9091 # transmission RPC/web UI (services.transmission.openFirewall only opens the peer port)
+  ];
 
   # selfhosted rarbg
   # https://github.com/mgdigital/rarbg-selfhosted
