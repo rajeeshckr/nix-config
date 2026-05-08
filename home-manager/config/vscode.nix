@@ -1,7 +1,10 @@
 { pkgs, ... }: {
- programs.vscode = {
+  # home-manager 25.05+ moved per-profile vscode settings under
+  # `programs.vscode.profiles.<name>.*` so users with multiple VS Code
+  # profiles can configure each. We only have one profile, so use `default`.
+  programs.vscode = {
     enable = true;
-      extensions = with pkgs.vscode-extensions; [
+    profiles.default.extensions = with pkgs.vscode-extensions; [
         # core
         dracula-theme.theme-dracula
         vscodevim.vim

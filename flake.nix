@@ -2,15 +2,20 @@
   description = "Your new nix config";
 
   inputs = {
-    # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    # Nixpkgs — bumped 24.11 → 25.11 in May 2026 to satisfy authentik-nix
+    # (its module uses lib.types.pathWith, added after 24.11). Bumping the
+    # whole flake is cleaner than carrying a second nixpkgs just for one
+    # service. system.stateVersion stays pinned at "24.11" — that gates
+    # one-shot migrations and should track the install vintage, not the
+    # current nixpkgs.
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
-    # Home manager
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    # Home manager — must track the same release branch as nixpkgs.
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     # s3cr3ts

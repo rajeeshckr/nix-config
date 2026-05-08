@@ -8,6 +8,13 @@ in {
   services.transmission = {
     enable = true;
     openFirewall = true;
+    # nixos-25.11 removed pkgs.transmission_3 (the previous default), so
+    # the package now has to be set explicitly. Pinning to transmission_4
+    # — upstream warns the 3→4 migration can lose torrent state for some
+    # users; resume.dat / stats are converted on first run, so back up
+    # `/srv/data/transmission` before the first switch if you care:
+    #   sudo cp -a /srv/data/transmission /srv/data/transmission.bak-pre-t4
+    package = pkgs.transmission_4;
     settings = {
       home = "/srv/data/transmission";
       download-dir = "/media/downloads";

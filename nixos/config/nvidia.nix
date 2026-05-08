@@ -20,8 +20,10 @@
   # Load NVIDIA driver
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  # Use Xorg session for GNOME to avoid Wayland/NVIDIA issues
-  services.xserver.displayManager.gdm.wayland = false;
+  # Use Xorg session for GNOME to avoid Wayland/NVIDIA issues.
+  # Renamed in 25.05+: `services.xserver.displayManager.gdm.*`
+  # → `services.displayManager.gdm.*`.
+  services.displayManager.gdm.wayland = false;
 
   hardware = {
 

@@ -121,26 +121,30 @@
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
+  # home-manager 25.05+ collapsed `userName`, `userEmail`, `aliases` and
+  # `extraConfig` into a single `settings` attrset that maps 1:1 to a
+  # gitconfig file. The structure mirrors gitconfig sections, e.g.
+  # `settings.user.name` ↔ `[user] name = …`.
   programs.git = {
     enable = true;
     lfs.enable = true;
-    userName = "rajeeshckr";
-    userEmail = "rajeesh.ckr@gmail.com";
-    aliases = {
-      "new" = "!git checkout -b sam.lockart/$1 && :";
-      "pl" = "!git fetch; git pull -r";
-      "p" = "push";
-      "untracked" = "ls-files --others --exclude-standard";
-      "amend" = "commit -a --amend --no-edit";
-      "rbm" = "!br=$((test -e .git/refs/remotes/origin/main && echo main) || echo master) && git fetch origin && git rebase origin/$br";
-    };
     ignores = [
       ".idea/"
       "shell.nix"
       ".envrc"
       ".direnv/"
     ];
-    extraConfig = {
+    settings = {
+      user.name = "rajeeshckr";
+      user.email = "rajeesh.ckr@gmail.com";
+      alias = {
+        "new" = "!git checkout -b sam.lockart/$1 && :";
+        "pl" = "!git fetch; git pull -r";
+        "p" = "push";
+        "untracked" = "ls-files --others --exclude-standard";
+        "amend" = "commit -a --amend --no-edit";
+        "rbm" = "!br=$((test -e .git/refs/remotes/origin/main && echo main) || echo master) && git fetch origin && git rebase origin/$br";
+      };
       url = {
         "ssh://git@github.com/" = {
           insteadOf = "https://github.com/";

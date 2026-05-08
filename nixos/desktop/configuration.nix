@@ -158,7 +158,9 @@
     pciutils # Provides lspci
     usbutils # Provides lsusb
 
-    thefuck
+    # `thefuck` was removed from nixpkgs 25.11 (unmaintained upstream,
+    # broken on python 3.12+). `pay-respects` is the recommended drop-in.
+    pay-respects
     mergerfs # required for the fuse.mergerfs pooled /media mount
   ];
 
@@ -188,8 +190,11 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  # Renamed in 25.05+: `services.xserver.{displayManager,desktopManager}.*`
+  # → `services.{displayManager,desktopManager}.*` (display/desktop managers
+  # are no longer assumed to be xserver-specific).
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -201,7 +206,8 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  # `hardware.pulseaudio.*` was renamed to `services.pulseaudio.*` in 25.05.
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -243,7 +249,7 @@
   # `systemctl suspend` (and via scheduled root system units, which bypass
   # polkit anyway). This is what enables nightly suspend-to-RAM for power saving
   # while keeping unprivileged sessions from putting the server to sleep.
-  services.xserver.displayManager.gdm.autoSuspend = false;
+  services.displayManager.gdm.autoSuspend = false;
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
         if (action.id == "org.freedesktop.login1.suspend" ||

@@ -2,7 +2,8 @@
   programs.k9s = {
     enable = true;
     settings = {};
-    plugin = {
+    # home-manager 25.05+ renamed `plugin` → `plugins` to match upstream k9s.
+    plugins = {
       plugins = {
         # currently requires launching a new terminal instance
         # as k9s doesn't support interactive plugins (from what I can tell)
