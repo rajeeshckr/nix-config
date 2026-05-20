@@ -10,6 +10,11 @@ in {
     unstable.jellyfin-ffmpeg
   ];
 
+  # `media` group historically created out-of-band; declare it so
+  # `users.users.<svc>.extraGroups = ["media"]` actually takes effect.
+  # GID 1000 matches the existing /etc/group entry.
+  users.groups.media.gid = 1000;
+
   services.jellyfin = {
     package = pkgs.unstable.jellyfin;
     enable = true;
@@ -24,14 +29,20 @@ in {
     dataDir = "/srv/data/radarr";
     openFirewall = true;
   };
-  users.users.radarr.extraGroups = ["transmission"];
+  users.users.radarr.extraGroups = ["transmission" "media"];
 
   services.sonarr = {
     enable = true;
     dataDir = "/srv/data/sonarr";
     openFirewall = true;
   };
-  users.users.sonarr.extraGroups = ["transmission"];
+  users.users.sonarr.extraGroups = ["transmission" "media"];
+
+  # Preserve existing `media` group membership that was set up out-of-band,
+  # now that we declare the group above (nix would otherwise drop these).
+  # transmission's *primary* group is set to `media` in transmission.nix, so
+  # we don't need it as an extra group here.
+  users.users.jellyfin.extraGroups = ["media"];
 
   services.jackett = {
     enable = true;

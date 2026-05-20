@@ -15,6 +15,12 @@ in {
     # `/srv/data/transmission` before the first switch if you care:
     #   sudo cp -a /srv/data/transmission /srv/data/transmission.bak-pre-t4
     package = pkgs.transmission_4;
+    # Run as `media` group so completed files are group-owned by `media`.
+    # Combined with umask 002 below this makes downloads writable by all
+    # other media services (sonarr/radarr/jellyfin are all in `media`).
+    # Needed because mergerfs + FUSE default_permissions does NOT honor
+    # supplementary groups — only the primary GID of the file matters.
+    group = "media";
     settings = {
       home = "/srv/data/transmission";
       download-dir = "/media/downloads";
@@ -27,6 +33,8 @@ in {
       rpc-authentication-required = false;
       ratio-limit = "0.0";
       ratio-limit-enabled = true;
+      # 0o002 -> new files 0664, new dirs 0775, group-writable for `media`.
+      umask = 2;
     };
   };
 

@@ -86,8 +86,29 @@ So **adding a new system service = create `nixos/desktop/<service>.nix` and add 
   and other databases also live on `/`. Never put DB data on `/media` (mergerfs)
   or `/media-usb` — they're nearly full HDDs/USB.
 - **Bulk media** lives under `/media`, which is a `fuse.mergerfs` union over
-  `/media-disk1` (sdb2), `/media-disk2` (sdc1) and `/media-usb` (sda1). Mount
-  options enforce `category.create=mfs` (most-free-space) and `minfreespace=1G`.
+ `/media-disk1` (sdb2), `/media-disk2` (sdc1) and `/media-usb` (sda1). Mount
+ options enforce `category.create=mfs` (most-free-space) and `minfreespace=1G`.
+ Standard layout (do not put loose media files at the top level):
+
+ ```
+ /media/
+ ├── movies/       # Jellyfin Movies library root, also for manually-copied movies
+ ├── tv/           # Sonarr root folder, Jellyfin TV Shows library root
+ └── downloads/    # transmission download-dir; subdirs per-service:
+     ├── radarr/   # also a Radarr root folder
+     └── tv-sonarr/
+ ```
+
+ - Rule of thumb: every media file must live under `movies/`, `tv/`, or `downloads/`.
+ Don't drop new files at `/media/<title>.mkv` — Jellyfin's per-library
+ path-claims fight, and you lose track of what's a movie vs a TV episode.
+ - When creating new top-level dirs on `/media`, also create them on each
+ underlying branch (`/media-disk{1,2}`, `/media-usb`) with `root:media 2775`,
+ otherwise mergerfs may only materialize the dir on a single branch and you'll
+ hit cross-branch `mv` surprises.
+ - `chown root:media`, `chmod 2775` (setgid so new files inherit `media`
+ group); all media services (`sonarr`, `radarr`, `jellyfin`, `transmission`)
+ are in the `media` group.
 - **Stable vs unstable packages**: `pkgs.unstable.<foo>` pulls from
   `nixpkgs-unstable` via the `unstable-packages` overlay. Used selectively for
   Jellyfin/Radarr/Jackett/Lutris/shadps4 to track upstream more aggressively.
@@ -131,12 +152,26 @@ nvidia-smi                # confirm the driver loaded
 ## Things that are easy to get wrong
 
 1. Forgetting to `git add` a new `.nix` file → flake eval fails with
-   `path '/nix/store/.../<file>.nix' does not exist`.
+ `path '/nix/store/.../<file>.nix' does not exist`.
 2. Editing `/etc/nixos` outside the repo (it *is* the repo, but a stray
-   `configuration.nix` at `/etc/nixos/configuration.nix` would be ignored — the
-   real entrypoints are under `nixos/`).
+ `configuration.nix` at `/etc/nixos/configuration.nix` would be ignored — the
+ real entrypoints are under `nixos/`).
 3. Touching `nixos/config/nvidia.nix` without updating all five hashes; the
-   build will fail with a hash mismatch.
+ build will fail with a hash mismatch.
 4. Putting service state on `/media` — mergerfs + `minfreespace=1G` will start
-   refusing writes once a branch is full, and Immich/Postgres explicitly
-   require a Unix-permission-aware local FS.
+ refusing writes once a branch is full, and Immich/Postgres explicitly
+ require a Unix-permission-aware local FS.
+5. **FUSE/mergerfs ignores supplementary groups** — `default_permissions`
+ (implicit when `allow_other` is set) means only the *primary* GID of a
+ process is honored against file group perms. Adding a user to a group via
+ `users.users.<u>.extraGroups = ["media"]` will NOT let them write to a
+ `media`-group dir on `/media`. The fix patterns we use:
+ - For a service whose primary group is its own (e.g. `sonarr`, `radarr`,
+ `jellyfin`): rely on the file being world-readable/writable (`0664`/`0775`
+ via setgid+umask), OR make the file's owner the service itself.
+ - For `transmission`: we set `services.transmission.group = "media"` so its
+ *primary* group is `media`, and `settings.umask = 2` so completed files
+ land `transmission:media 0664` group-writable.
+ - The `media` group is declared in `nixos/desktop/media.nix` (gid 1000) and
+ its member services must each have `extraGroups = ["media"]` declared, or
+ nix will quietly drop them on the next rebuild.
