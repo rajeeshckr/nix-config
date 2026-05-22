@@ -5,4 +5,5 @@ in
 {
   "hugging-face-ro-token.age".publicKeys = users;
   "authentik-env.age".publicKeys = users;
+  "jellyfin-api-key.age".publicKeys = users;
 }

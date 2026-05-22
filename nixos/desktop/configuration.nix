@@ -18,7 +18,7 @@
       ./media.nix 
       ./immich.nix
       ./samba.nix
-      # ./media-rename.nix
+      ./media-rename.nix
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
       ./spliteasy.nix  # SplitEasy expense splitting backend
       ./vaultwarden.nix # Self-hosted Bitwarden-compatible password manager
