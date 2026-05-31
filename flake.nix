@@ -36,6 +36,7 @@
     # IMPORTANT: do NOT set inputs.nixpkgs.follows here — upstream warns
     # that overriding the pinned nixpkgs breaks the python deps.
     authentik-nix.url = "github:nix-community/authentik-nix";
+
   };
 
   outputs = {

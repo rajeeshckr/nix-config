@@ -14,12 +14,16 @@
 #
 # Architecture:
 #   browser/app
-#       │  HTTPS
+#       │  HTTPS  (TLS terminated at Cloudflare's edge — no ACME on origin)
 #       ▼
-#   nginx :443  (auth.rajeeshckr.uk, ACME via existing wildcard setup)
+#   Cloudflare edge → cloudflared (tunnel, dialed outbound by our box)
 #       │  HTTP, loopback only
 #       ▼
-#   authentik server :9000  +  worker  +  embedded outpost :9000/outpost.goauthentik.io
+#   nginx :80   (vhost auth.rajeeshckr.uk, set up by services.authentik.nginx)
+#       │  HTTPS, loopback only (authentik's self-signed cert; nginx
+#       │  doesn't verify upstream certs by default)
+#       ▼
+#   authentik server :9443 + :9000  +  worker  +  embedded outpost
 #       │
 #       ├─ postgres (local, managed by the module)
 #       └─ redis    (local, managed by the module)
@@ -37,11 +41,12 @@
 #      (Immich OIDC, Radarr forward-auth, etc.) is added in follow-up
 #      commits — see doc/AUTHENTIK.md once it exists.
 #
-# DNS:
-#   Add an A record for `auth.rajeeshckr.uk` in Cloudflare (DNS-only /
-#   grey cloud, same convention as the other rajeeshckr.uk subdomains)
-#   pointing at the home WAN IP, before the first rebuild. ACME HTTP-01
-#   will fail without it.
+# DNS / routing:
+#   auth.rajeeshckr.uk is fronted by the Cloudflare Tunnel (see
+#   nixos/desktop/cloudflared.nix). The DNS entry is a proxied CNAME to
+#   <tunnel-uuid>.cfargotunnel.com (auto-created when the Public Hostname
+#   route is added in the Cloudflare dashboard). No ACME needed — TLS
+#   terminates at the edge.
 
 {
   age.secrets.authentik-env.file = ../../secrets/authentik-env.age;
@@ -53,13 +58,14 @@
     # world-readable /nix/store.
     environmentFile = config.age.secrets.authentik-env.path;
 
-    # The flake's nginx integration creates the vhost, requests an ACME
-    # cert, and points authentik's internal cert-discovery at the issued
-    # files. Discovery runs on a 1-hour timer, so the very first issuance
-    # may take a moment to show up in the Authentik UI's Certificates page.
+    # The flake's nginx integration creates the auth.rajeeshckr.uk vhost
+    # (proxying to authentik's internal HTTPS listener on :9443).
+    # `enableACME = false` because we're behind a Cloudflare Tunnel that
+    # terminates TLS at the edge — the origin vhost just listens on
+    # plain HTTP on loopback :80 and is reached only via cloudflared.
     nginx = {
       enable = true;
-      enableACME = true;
+      enableACME = false;
       host = "auth.rajeeshckr.uk";
     };
 

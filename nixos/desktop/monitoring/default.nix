@@ -1,5 +1,29 @@
 { config, lib, pkgs, ... }:
 
+# OIDC SSO via Authentik (see nixos/desktop/authentik.nix for the IdP).
+# Wiring summary:
+#   - services.grafana.settings.auth.generic_oauth.* below tells Grafana to
+#     redirect `/login` to Authentik for everyone except the local `admin`
+#     user (still reachable via /login form for break-glass).
+#   - GF_AUTH_GENERIC_OAUTH_CLIENT_ID + GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+#     are sourced from the agenix-encrypted env file at
+#     /run/agenix/grafana-oauth (created from secrets/grafana-oauth.age).
+#     Grafana auto-honours `$GF_<SECTION>_<KEY>` env vars, so the values
+#     in `settings.auth.generic_oauth.{client_id,client_secret}` would be
+#     overridden anyway — we leave them unset in the nix config so they
+#     don't end up in the world-readable /nix/store.
+#
+# Steps to (re-)provision the OIDC link:
+#   1. In Authentik admin UI create an OAuth2/OpenID Provider + Application
+#      called "Grafana", with redirect URI
+#      https://grafana.rajeeshckr.uk/login/generic_oauth (and the LAN URLs
+#      if you log in directly via http://nixos:3001).
+#   2. Copy Client ID + Secret from Authentik's provider page into
+#      secrets/grafana-oauth.age:
+#         agenix -e grafana-oauth.age
+#         (file format: KEY=VALUE per line, no quoting)
+#   3. `update`. Grafana will pick up the new env on its next restart.
+
 # Prometheus + Grafana monitoring stack for the homelab.
 #
 # Layout:
@@ -9,7 +33,7 @@
 #   │ node_exporter      :9100     │  CPU / RAM / disk / systemd │
 #   │ smartctl_exporter  :9633     │  SMART health & temps       │
 #   │ nginx_exporter     :9113     │  stub_status                │
-#   │ postgres_exporter  :9187     │  immich DB                  │
+#   │ postgres_exporter  :9187     │  authentik DB               │
 #   │ blackbox_exporter  :9115     │  HTTP probe everything      │
 #   │ exportarr-sonarr   :9707     │  sonarr API                 │
 #   │ exportarr-radarr   :9708     │  radarr API                 │
@@ -67,6 +91,25 @@ let
   '';
 in
 {
+  # OIDC client id + secret live in the agenix-encrypted env file, mounted
+  # into grafana via `environmentFile` below. Grafana auto-honours the
+  # GF_<SECTION>_<KEY> env-var convention so we don't repeat the values
+  # in `settings.auth.generic_oauth.*`.
+  age.secrets.grafana-oauth = {
+    file = ../../../secrets/grafana-oauth.age;
+    owner = "grafana";
+    group = "grafana";
+    mode = "0400";
+  };
+
+  # File containing GF_AUTH_GENERIC_OAUTH_CLIENT_ID and ..._CLIENT_SECRET
+  # — keeps the secret out of /nix/store. Pulled in via systemd's
+  # EnvironmentFile (services.grafana doesn't expose its own option for
+  # this in nixos 25.11). Grafana reads any GF_<SECTION>_<KEY> env var
+  # at startup and overrides the matching settings.* value.
+  systemd.services.grafana.serviceConfig.EnvironmentFile =
+    config.age.secrets.grafana-oauth.path;
+
   # --- Grafana ----------------------------------------------------------
   services.grafana = {
     enable = true;
@@ -88,6 +131,33 @@ in
         cookie_secure = false;
       };
       analytics.reporting_enabled = false;
+
+      # --- OIDC (via Authentik) -----------------------------------------
+      "auth.generic_oauth" = {
+        enabled = true;
+        name = "authentik";
+        # client_id / client_secret intentionally omitted — see env file.
+        scopes = "openid email profile offline_access";
+        # Authentik exposes its OIDC discovery doc per-application under
+        # /application/o/<slug>/. Grafana will derive auth/token/userinfo
+        # URLs from this automatically.
+        auth_url      = "https://auth.rajeeshckr.uk/application/o/authorize/";
+        token_url     = "https://auth.rajeeshckr.uk/application/o/token/";
+        api_url       = "https://auth.rajeeshckr.uk/application/o/userinfo/";
+        # Auto-create matching grafana users on first login. Roles are
+        # mapped from the `groups` claim — see role_attribute_path below.
+        allow_sign_up = true;
+        auto_login    = false;  # keep the local "admin" form available for break-glass
+        use_pkce      = true;
+        # JMESPath against the userinfo token: members of the Authentik
+        # `Grafana Admins` group become Admin, everyone else gets Viewer.
+        # Adjust the group names to match what you create in Authentik.
+        role_attribute_path = "contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'";
+        # If a logged-in user doesn't match any of the above (impossible
+        # given the fallback to 'Viewer'), reject rather than silently
+        # demote them.
+        role_attribute_strict = false;
+      };
     };
 
     provision = {
@@ -114,10 +184,12 @@ in
     };
   };
 
-  # nginx vhost for Grafana — same pattern as immich/vault/jellyfin.
+  # nginx vhost for Grafana — fronted by Cloudflare Tunnel (same pattern
+  # as jellyfin/vault in nixos/config/network/internet-access.nix). TLS
+  # terminates at Cloudflare's edge; the origin listens HTTP-only on :80.
+  # X-Forwarded-Proto comes through from cloudflared as "https" so Grafana
+  # generates correct absolute URLs against its `root_url`.
   services.nginx.virtualHosts."grafana.rajeeshckr.uk" = {
-    enableACME = true;
-    forceSSL = true;
     locations."/" = {
       proxyPass = "http://127.0.0.1:${toString ports.grafana}";
       proxyWebsockets = true; # live tail / explore needs WS
@@ -157,7 +229,7 @@ in
   };
 
   # postgres_exporter connects via local peer auth; runAsLocalSuperUser
-  # uses the `postgres` system user which immich's services.postgresql
+  # uses the `postgres` system user which authentik's services.postgresql
   # already provisions. dataSourceName is required by the option even
   # when running as superuser; it's ignored at runtime.
   services.prometheus.exporters.postgres = {
@@ -179,8 +251,8 @@ in
             valid_http_versions = [ "HTTP/1.1" "HTTP/2.0" ];
             # Most homelab UIs return 200/302 to "/", but transmission's
             # RPC endpoint returns 409 to a plain GET (CSRF guard) and
-            # vaultwarden/immich's API roots may 401 — accept all of those
-            # as "the service is alive" for the purpose of probing.
+            # vaultwarden's API root may 401 — accept all of those as
+            # "the service is alive" for the purpose of probing.
             valid_status_codes = [ 200 301 302 401 403 404 409 ];
             method = "GET";
             follow_redirects = true;
@@ -335,7 +407,6 @@ in
               "http://127.0.0.1:9117"  # jackett
               "http://127.0.0.1:8191"  # flaresolverr
               "http://127.0.0.1:9091/transmission/web/" # transmission
-              "http://127.0.0.1:2283"  # immich
               "http://127.0.0.1:8222"  # vaultwarden
               "http://127.0.0.1:8000/health"  # vllm
             ];

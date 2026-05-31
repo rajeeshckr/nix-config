@@ -9,70 +9,55 @@
     useRoutingFeatures = "both";
   };
 
-  # cloudflared (Cloudflare Tunnel) is installed but inactive until a tunnel
-  # is configured. Currently unused — kept for the option of closing
-  # router port-forwards 80/443 in future.
-  services.cloudflared = {
-    enable = true;
-  };
-
-  # Let's Encrypt for nginx vhosts below.
+  # Let's Encrypt — kept enabled because `security.acme` has no harm when
+  # no vhost references it. All current public vhosts are Cloudflare-Tunnel
+  # fronted (TLS terminated at the edge), so nothing actually requests an
+  # ACME cert right now. Leave the block in place so a future direct vhost
+  # can opt into ACME by just setting `enableACME = true;` on its own line.
   security.acme = {
     acceptTerms = true;
     defaults.email = "rajeesh.ckr@gmail.com";
   };
 
-  # Reverse proxy. Each public-facing service gets its own subdomain on
-  # rajeeshckr.uk (DNS managed by Cloudflare, set to "DNS only" — grey
-  # cloud — so HTTP-01 ACME challenges work and Cloudflare's free-plan
-  # 100 MB upload cap doesn't bite Immich).
+  # Reverse proxy. All public-facing services run behind a Cloudflare Tunnel:
   #
-  # Convention: one subdomain per service, proxied to the loopback port the
-  # service already listens on. LAN clients can still hit the service
-  # directly on its native port via 192.168.1.30:<port>.
+  #     client → Cloudflare edge (HTTPS) → cloudflared (QUIC tunnel)
+  #            → nginx :80 (loopback, HTTP-only) → backend
+  #
+  # Each vhost listens HTTP-only — no ACME, no forceSSL. TLS terminates at
+  # Cloudflare's edge using its Universal SSL cert for *.rajeeshckr.uk.
+  # Keeping nginx in the chain (rather than pointing cloudflared straight
+  # at each backend) means proxy_set_header, proxyWebsockets,
+  # client_max_body_size and other per-service knobs stay declarative
+  # here, not duplicated into the Cloudflare dashboard.
+  #
+  # Public hostnames currently routed (kept in sync with the dashboard's
+  # "Public Hostname" tab on the nixos-home tunnel):
+  #     jellyfin.rajeeshckr.uk   ← this file
+  #     vault.rajeeshckr.uk      ← this file
+  #     auth.rajeeshckr.uk       ← nixos/desktop/authentik.nix
+  #     grafana.rajeeshckr.uk    ← nixos/desktop/monitoring/default.nix
+  #
+  # LAN clients can still hit each service directly on its native port via
+  # 192.168.1.30:<port> (no Cloudflare in the path, no TLS, full LAN speed).
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
 
     virtualHosts = {
-      "immich.rajeeshckr.uk" = {
-        enableACME = true;
-        forceSSL = true;
-        # Immich uploads originals (raw photos, 4K video) — needs big body
-        # size and long timeouts. nginx default of 1 MB will reject uploads
-        # with HTTP 413.
-        extraConfig = ''
-          client_max_body_size 50000M;
-          proxy_read_timeout   600s;
-          proxy_send_timeout   600s;
-          send_timeout         600s;
-        '';
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:2283";
-          proxyWebsockets = true;
-          extraConfig = ''
-            proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header X-Forwarded-Host  $host;
-            proxy_buffering        off;
-            proxy_request_buffering off;
-          '';
-        };
-      };
-
       # Vaultwarden (Bitwarden-compatible) — see nixos/desktop/vaultwarden.nix.
       # Bitwarden clients (browser ext, mobile, CLI) require HTTPS, so this
-      # vhost is the only way to actually use the vault. The websocket path
-      # piggybacks on the same port in modern vaultwarden — `proxyWebsockets`
-      # plus the Upgrade/Connection headers below cover both /api and
-      # /notifications/hub.
+      # vhost is the only way to actually use the vault from outside the LAN.
+      # The websocket path piggybacks on the same port in modern vaultwarden
+      # — `proxyWebsockets` plus the Upgrade/Connection headers below cover
+      # both /api and /notifications/hub.
       "vault.rajeeshckr.uk" = {
-        enableACME = true;
-        forceSSL = true;
-        # Vaultwarden allows attachments up to 128 MiB by default; bump
-        # nginx's body limit so attaching files doesn't 413.
+        # Vaultwarden allows attachments up to 128 MiB by default, but
+        # Cloudflare Free caps request bodies at 100 MB — set the nginx
+        # limit below that so a 413 has a chance to come from us with a
+        # legible error rather than from Cloudflare's edge first.
         extraConfig = ''
-          client_max_body_size 256M;
+          client_max_body_size 95M;
         '';
         locations."/" = {
           proxyPass = "http://127.0.0.1:8222";
@@ -86,8 +71,6 @@
       };
 
       "jellyfin.rajeeshckr.uk" = {
-        enableACME = true;
-        forceSSL = true;
         extraConfig = ''
           add_header X-Content-Type-Options "nosniff" always;
         '';

@@ -16,8 +16,8 @@
       ./hardware-configuration.nix
       ./transmission.nix
       ./media.nix 
-      ./immich.nix
       ./samba.nix
+      ./cloudflared.nix # Cloudflare Tunnel — outbound public-host reach under CGNAT
       ./media-rename.nix
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
       ./spliteasy.nix  # SplitEasy expense splitting backend
@@ -25,6 +25,7 @@
       ./authentik.nix  # Authentik SSO/IdP (OIDC + nginx forward-auth outpost)
       ./monitoring     # Prometheus + Grafana + per-service exporters
       ./nightly-suspend.nix # Suspend at 02:00, RTC wake at 08:00 (with safety gates)
+      ./nordvpn.nix         # NordVPN commercial VPN (NordLynx/WireGuard)
     ];
 
   # Bootloader.
@@ -91,7 +92,17 @@
     options = [ "defaults" "noatime" ];
   };
 
-  # USB drive (ext4) — third storage disk, formerly NTFS router USB
+  # USB drive (label MEDIA3) — third storage disk, formerly NTFS router USB.
+  #
+  # 2026-05-28 incident: the USB-SATA bridge hung mid-day, triggering an
+  # ext4 journal abort (`JBD2: I/O error when updating journal superblock`)
+  # and repeated `EXT4-fs ... error -5 reading directory block` on inodes
+  # #2 and #44957697. Because mergerfs surfaces EIO from any branch, every
+  # write to /media (phone SMB, transmission, radarr, jellyfin scans) broke.
+  # A reboot reset the bridge cleanly: drive re-enumerated with no errors,
+  # journal recovery succeeded on next mount, all data intact. Re-added to
+  # the pool. If it flakes again, comment this block + drop ":/media-usb"
+  # below to recover; the bridge (not the drive) is the suspect component.
   fileSystems."/media-usb" = {
     device = "/dev/disk/by-label/MEDIA3";
     fsType = "ext4";
@@ -101,7 +112,6 @@
   # Unified pool presented at /media
   # mergerfs concatenates directories; new files placed according to policy.
   # category.create=mfs => choose drive with most free space for new creates.
-  # Includes USB drive (/media-usb) — existing movies appear in /media.
   fileSystems."/media" = {
     device = "/media-disk1:/media-disk2:/media-usb";
     fsType = "fuse.mergerfs";

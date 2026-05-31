@@ -5,5 +5,7 @@ in
 {
   "hugging-face-ro-token.age".publicKeys = users;
   "authentik-env.age".publicKeys = users;
+  "grafana-oauth.age".publicKeys = users;
   "jellyfin-api-key.age".publicKeys = users;
+  "cloudflared-token.age".publicKeys = users;
 }

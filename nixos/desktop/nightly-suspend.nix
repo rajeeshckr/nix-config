@@ -85,7 +85,7 @@ let
       #     even when no shell session is open. Loopback connections (e.g.
       #     internal exporters scraping) don't count.
       busy_port=""
-      for port in 8096 2283 8222; do
+      for port in 8096 8222; do
         if ss -tnH "state established" "( sport = :$port )" 2>/dev/null \
            | awk '$5 !~ /^127\./ && $5 !~ /^\[::1\]/ {print; exit}' \
            | grep -q .; then
@@ -94,7 +94,7 @@ let
         fi
       done
       if [ -n "$busy_port" ]; then
-        log "active client connected to port $busy_port (jellyfin/immich/vaultwarden), skipping"
+        log "active client connected to port $busy_port (jellyfin/vaultwarden), skipping"
         exit 0
       fi
 

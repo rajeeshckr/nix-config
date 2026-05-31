@@ -51,7 +51,7 @@ nix eval .#nixosConfigurations.nixos.config.services.<name>.<option>
 │       ├── configuration.nix      # entrypoint, imports everything below + hardware-configuration.nix
 │       ├── hardware-configuration.nix
 │       ├── media.nix              # Jellyfin, Radarr, Sonarr, Bazarr, Jackett, FlareSolverr
-│       ├── immich.nix             # Immich photo backup (services.immich)
+│       ├── cloudflared.nix        # Cloudflare Tunnel (outbound public-host reach under CGNAT)
 │       ├── transmission.nix
 │       ├── samba.nix
 │       ├── swe-bench.nix          # SWE-bench harness w/ vLLM
@@ -77,14 +77,14 @@ nix eval .#nixosConfigurations.nixos.config.services.<name>.<option>
 1. `nixos/configuration.nix` — base/global config (overlays, nix settings, agenix, openssh).
 2. `nixos/desktop/configuration.nix` — the host-specific config; imports everything in `nixos/config/*` and the per-service files under `nixos/desktop/`.
 
-So **adding a new system service = create `nixos/desktop/<service>.nix` and add it to the `imports` list in `nixos/desktop/configuration.nix`**. (See `immich.nix` for a recent example.)
+So **adding a new system service = create `nixos/desktop/<service>.nix` and add it to the `imports` list in `nixos/desktop/configuration.nix`**. (See `vaultwarden.nix` or `cloudflared.nix` for recent examples.)
 
 ## Conventions
 
 - **Service data dirs** live under `/srv/data/<service>` on the SSD root fs
-  (e.g. `/srv/data/jellyfin`, `/srv/data/radarr`, `/srv/data/immich`). Postgres
-  and other databases also live on `/`. Never put DB data on `/media` (mergerfs)
-  or `/media-usb` — they're nearly full HDDs/USB.
+ (e.g. `/srv/data/jellyfin`, `/srv/data/radarr`). Postgres and other
+ databases also live on `/`. Never put DB data on `/media` (mergerfs)
+ or `/media-usb` — they're nearly full HDDs/USB.
 - **Bulk media** lives under `/media`, which is a `fuse.mergerfs` union over
  `/media-disk1` (sdb2), `/media-disk2` (sdc1) and `/media-usb` (sda1). Mount
  options enforce `category.create=mfs` (most-free-space) and `minfreespace=1G`.
@@ -103,12 +103,17 @@ So **adding a new system service = create `nixos/desktop/<service>.nix` and add 
  Don't drop new files at `/media/<title>.mkv` — Jellyfin's per-library
  path-claims fight, and you lose track of what's a movie vs a TV episode.
  - When creating new top-level dirs on `/media`, also create them on each
- underlying branch (`/media-disk{1,2}`, `/media-usb`) with `root:media 2775`,
+ underlying branch (`/media-disk{1,2}`, `/media-usb`) with `root:media 2777`,
  otherwise mergerfs may only materialize the dir on a single branch and you'll
  hit cross-branch `mv` surprises.
- - `chown root:media`, `chmod 2775` (setgid so new files inherit `media`
+ - `chown root:media`, `chmod 2777` (setgid so new files inherit `media`
  group); all media services (`sonarr`, `radarr`, `jellyfin`, `transmission`)
- are in the `media` group.
+ are in the `media` group. We use `2777` rather than `2775` because the Samba
+ `media` share force-writes as `raj` (whose primary gid is `raj`, not `media`),
+ and mergerfs ignores supplementary groups (see point 5 below) — so without
+ the world-writable bit, mobile/SMB copies into `/media/movies` and
+ `/media/tv` fail with EACCES. The LAN-only Samba ACL (`hosts allow =
+ 192.168.1.`) makes the world-writable bit harmless in practice.
 - **Stable vs unstable packages**: `pkgs.unstable.<foo>` pulls from
   `nixpkgs-unstable` via the `unstable-packages` overlay. Used selectively for
   Jellyfin/Radarr/Jackett/Lutris/shadps4 to track upstream more aggressively.
@@ -133,10 +138,10 @@ So **adding a new system service = create `nixos/desktop/<service>.nix` and add 
 ## Network / firewall
 
 - `media.nix` opens UDP `1900, 7359, 9091, 9117, 7878` and TCP `8191`.
-- `transmission.nix`, `samba.nix`, `swe-bench.nix`, `spliteasy.nix`, `immich.nix`
-  each open their own ports via `openFirewall = true` or explicit
-  `networking.firewall.allowed*Ports`. When adding a service, prefer the
-  module's `openFirewall` option over hand-rolled firewall rules.
+- `transmission.nix`, `samba.nix`, `swe-bench.nix`, `spliteasy.nix` each
+ open their own ports via `openFirewall = true` or explicit
+ `networking.firewall.allowed*Ports`. When adding a service, prefer the
+ module's `openFirewall` option over hand-rolled firewall rules.
 - Tailscale is installed (binary in `systemPackages`) but not enabled as a
   service here — it's managed manually if at all.
 
