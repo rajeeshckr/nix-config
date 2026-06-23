@@ -18,6 +18,8 @@
       ./media.nix 
       ./samba.nix
       ./cloudflared.nix # Cloudflare Tunnel — outbound public-host reach under CGNAT
+      ./openclaw.nix    # OpenClaw agent (local-LLM assistant, chat from mobile)
+      ./tamilmv-watch.nix # Friday 1TamilMV digest + confirm-to-grab via OpenClaw
       ./media-rename.nix
       ./swe-bench.nix  # SWE-bench AI coding benchmarks with vLLM
       ./spliteasy.nix  # SplitEasy expense splitting backend

@@ -8,4 +8,5 @@ in
   "grafana-oauth.age".publicKeys = users;
   "jellyfin-api-key.age".publicKeys = users;
   "cloudflared-token.age".publicKeys = users;
+  "openclaw-gateway-token.age".publicKeys = users;
 }
