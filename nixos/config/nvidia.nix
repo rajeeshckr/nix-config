@@ -30,7 +30,14 @@
     nvidia = {
       modesetting.enable = true;
       powerManagement = {
-        enable = false;
+        # Enabled so CUDA/UVM survives the nightly suspend/resume cycle
+        # (nixos/desktop/nightly-suspend.nix). Without it, resume leaves the
+        # NVIDIA UVM state corrupted: nvidia-smi/NVML keeps working, but every
+        # CUDA init fails with "unknown error", so ollama silently falls back
+        # to CPU and the OpenClaw agent (qwen2.5:7b) becomes painfully slow.
+        # This installs nvidia-suspend/resume services + sets
+        # NVreg_PreserveVideoMemoryAllocations=1 to save/restore VRAM properly.
+        enable = true;
         finegrained = false;
       };
       open = true;

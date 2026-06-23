@@ -88,11 +88,17 @@
   # Feel free to remove if you don't need it.
   services.openssh = {
     enable = true;
+    # Don't let the module open port 22 on all interfaces. Public SSH is via
+    # the Cloudflare Tunnel (-> localhost:22, which bypasses the firewall);
+    # LAN access is opened explicitly on wlp7s0 in internet-access.nix.
+    openFirewall = false;
     settings = {
-      # Opinionated: forbid root login through SSH.
-#       PermitRootLogin = "no";
-      # Opinionated: use keys only.
-      # Remove if you want to SSH using passwords
+      # Keys-only: the SSH daemon is reachable via the Cloudflare Tunnel
+      # (ssh.rajeeshckr.uk -> localhost:22), so disable every password-based
+      # auth vector to remove brute-force as a threat. Login is key-only.
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+      PermitRootLogin = "no";
     };
   };
 }

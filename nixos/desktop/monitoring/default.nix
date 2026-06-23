@@ -190,6 +190,9 @@ in
   # X-Forwarded-Proto comes through from cloudflared as "https" so Grafana
   # generates correct absolute URLs against its `root_url`.
   services.nginx.virtualHosts."grafana.rajeeshckr.uk" = {
+    # HTTP/2 off — avoids the HPACK "HTTP/2 Bomb" DoS; the only h2 peer would
+    # be cloudflared on the loopback hop. See internet-access.nix for context.
+    http2 = false;
     locations."/" = {
       proxyPass = "http://127.0.0.1:${toString ports.grafana}";
       proxyWebsockets = true; # live tail / explore needs WS

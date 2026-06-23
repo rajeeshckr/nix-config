@@ -82,4 +82,10 @@
       # };
     };
   };
+
+  # The authentik module creates the auth.rajeeshckr.uk vhost; merge in an
+  # http2 override. HTTP/2 off avoids the HPACK "HTTP/2 Bomb" memory-DoS
+  # (the only h2 peer is cloudflared on the loopback hop) — see
+  # nixos/config/network/internet-access.nix for the full rationale.
+  services.nginx.virtualHosts."auth.rajeeshckr.uk".http2 = false;
 }

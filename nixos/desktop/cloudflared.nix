@@ -39,9 +39,27 @@
 # Tunnel routes (mirror this in the Cloudflare dashboard):
 #   jellyfin.rajeeshckr.uk → HTTP → localhost:80
 #   vault.rajeeshckr.uk    → HTTP → localhost:80
+#   claw.rajeeshckr.uk     → HTTP → localhost:80  (OpenClaw agent; see openclaw.nix)
+#   ssh.rajeeshckr.uk      → SSH  → localhost:22
+#
+# IMPORTANT for claw.rajeeshckr.uk: this fronts an agent that can run commands
+# on the box (incl. nixos-rebuild). Gate it with a Cloudflare Access policy
+# (Zero Trust → Access → Applications, Self-hosted, same hostname) before it
+# is usable from the internet — email-OTP/Google restricted to your address at
+# minimum, ideally an mTLS client-cert or WARP-device rule to bind it to your
+# phone. See the security note in nixos/desktop/openclaw.nix.
 #   (auth + grafana can be added later — they currently have their own
 #    ACME-issued vhosts that don't work under CGNAT either, but moving
 #    them through the tunnel is a separate change in their own files.)
+#
+# The ssh route is the odd one out: type SSH (not HTTP) pointing straight
+# at openssh on localhost:22, bypassing nginx (nginx only speaks HTTP).
+# Clients reach it with `cloudflared access ssh` as an SSH ProxyCommand —
+# no inbound port is exposed, the connector proxies the TCP stream out
+# over the existing QUIC tunnel. Gate it with a Cloudflare Access policy
+# (Zero Trust → Access → Applications, type Self-hosted, same hostname)
+# so the SSH port isn't reachable by anyone who merely knows the hostname;
+# your SSH private key remains the second factor end-to-end.
 #
 # Caveat: Cloudflare Free plan rejects request bodies >100 MB with HTTP
 # 413 — this is *not* configurable from our side. Fine for streams and

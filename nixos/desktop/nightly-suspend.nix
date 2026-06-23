@@ -1,5 +1,5 @@
-# Nightly suspend-to-RAM: at 02:00 every night, check whether the box is busy;
-# if not, arm an RTC wake alarm for 08:00 and suspend to S3.
+# Nightly suspend-to-RAM: at 23:00 every night, check whether the box is busy;
+# if not, arm an RTC wake alarm for 07:00 and suspend to S3.
 #
 # Why this exists:
 #   - Idle 24/7 with this hardware (Ryzen 7 7700 + RTX 5070 Ti) burns ~100-150W.
@@ -27,8 +27,8 @@
 let
   # Times are in local (system) time. Adjust if your free-power window or
   # routine changes.
-  suspendTime = "22:00";
-  wakeTime = "08:00";
+  suspendTime = "23:00";
+  wakeTime = "07:00";
 
   # The script that decides whether to suspend, then does it. We keep this
   # readable instead of golf-ing it; the journal entries are how you'll debug

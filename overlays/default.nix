@@ -17,7 +17,18 @@
   unstable-packages = final: _prev: {
     unstable = import inputs.nixpkgs-unstable {
       system = final.system;
-      config.allowUnfree = true;
+      config = {
+        allowUnfree = true;
+        # OpenClaw (nixos/desktop/openclaw.nix) is flagged insecure upstream
+        # because it lets an LLM run with full system access — exactly the
+        # risk we deliberately mitigate (Cloudflare Access + gateway token +
+        # scoped sudo). Permit it by name so the allowance survives version
+        # bumps in nixpkgs-unstable.
+        # NB: check-meta runs this on the raw mkDerivation attrs (pname/version),
+        # where `name` isn't set yet — so match on pname first, name second.
+        allowInsecurePredicate = pkg:
+          (pkg.pname or (builtins.parseDrvName (pkg.name or "")).name) == "openclaw";
+      };
     };
   };
 }

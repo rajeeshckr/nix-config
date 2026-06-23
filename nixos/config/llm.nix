@@ -11,6 +11,9 @@
     openFirewall = true;
     loadModels = [
       "deepseek-r1:14b"
+      # Tool-calling model for the OpenClaw agent (see nixos/desktop/openclaw.nix);
+      # deepseek-r1's <think> output is unsuitable as an agent/tool-calling model.
+      "qwen2.5:7b"
     ];
   };
 }
